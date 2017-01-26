@@ -1,0 +1,4604 @@
+// vim:set ft=asciidoc syntax=OFF cc=80:
+//generating PDF:
+//  asciidoctor-pdf -a allow-uri-read living\ files/vmx-tips/vmx-tips.txt
+//generating webpage:
+//  asciidoctor living\ files/vmx-tips/vmx-tips.txt
+= git tutorial
+:doctype: book
+//this line is to generate a "side panel"
+:toc: right
+:toclevels: 3
+:toc-title: Table of Content
+//these below 2 lines are for github
+//:toc: manual
+//:toc-placement: preamble
+:numbered:
+:iconsdir: 
+:icons: font
+:source-highlighter: prettify
+//:prettify-theme:
+:source-highlighter: highlightjs
+:highlightjs-theme: googlecode
+:source-highlighter: pygments
+:pygments-linenums-mode: inline
+:source-highlighter: coderay
+:coderay-linenums-mode: table
+:coderay-linenums-mode: inline
+//:highlightjs-linenums-mode: inline
+//https://github.com/isagalaev/highlight.js/tree/master/src/styles
+:data-uri:
+:allow-uri-read:
+//:hardbreaks:
+:last-update-label!:
+//:nofooter:
+:sectanchors:
+//:sectlinks:
+:Author:  Ping Song
+:Author Initials: SP
+:Date:   Aug 2015
+:Email:   pings@juniper.net
+:title: git tutorial
+:experimental:
+:stylesheetdir: {user-home}/Dropbox/asciidoctor-stylesheet-factory/stylesheets/
+:stylesheet: {stylesheetdir}foundation-potion.css
+:stylesheet: {stylesheetdir}foundation-lime.css
+//literal block frame is more clear, ".title" not obvious
+:stylesheet: {stylesheetdir}foundation.css
+//no much benefits highlight
+:stylesheet: {stylesheetdir}rocket-panda.css
+//".title" obvious (italics)
+:stylesheet: {stylesheetdir}asciidoctor.css
+//TOC red
+:stylesheet: {stylesheetdir}maker.css
+//extra frame for NOTE, seems compact
+:stylesheet: {stylesheetdir}readthedocs.css
+//much smaller font, seems no much other effect
+:stylesheet: {stylesheetdir}asciidoctor-compact.css
+:stylesheet: {stylesheetdir}asciidoctor-default.css
+:stylesheet: {stylesheetdir}github.css
+:stylesheet: {stylesheetdir}rubygems.css
+//black background for literal block, seems too sharp
+:stylesheet: {stylesheetdir}iconic.css
+:stylesheet: {stylesheetdir}riak.css
+//table header, tip/note red font, overall not bad
+:stylesheet: {stylesheetdir}colony.css
+//".title" not obvious, overall not bad
+:stylesheet: {stylesheetdir}golo.css            
+:tabledef-default.subs: normal,callouts 
+//seems no use
+:max-width: 150em
+
+:bookreading!:
+
+== pending issue
+
+.'git revert CID' often does not work
+
+say I wan to discard all new commits and move back to a commit "65dc"
+
+    ping@ubuntu1404:~/pinggit$ git lg -20
+    * c87df22 - (HEAD -> master) unnamed (4 days ago)<ping>
+    * 3bc7168 - (blog/master) test (5 months ago)<ping>
+    * f4ec0d2 - test (5 months ago)<ping>
+    * b19cccc - test (5 months ago)<ping>
+    * 3adcadf - test (5 months ago)<ping>
+    * 45f0df9 - test (5 months ago)<ping>
+    * 680c77b - unnamed (5 months ago)<ping>
+    * ba4d8e0 - vmx (9 months ago)<ping>
+    * 996bc75 - unnamed (10 months ago)<ping>
+    * a7319bf - unnamed (10 months ago)<ping>
+    * aa7c5c5 - remove a wrong file (10 months ago)<ping>
+    *   96a9dbb - Merge branch 'master' of https://github.com/pinggit/blog (10 months ago)<ping>
+    |\
+    | * 5f802aa - init (5 years ago)<Linghua Zhang>
+    * 65dc5db - vmx-tutorial (10 months ago)<ping>      #<------
+    * 76286e7 - unnamed (1 year, 8 months ago)<ping>
+    * a7e6c51 - issuechecker (1 year, 8 months ago)<ping>
+    * 1a8fe6f - talk about time with xixi (1 year, 9 months ago)<ping>
+    * f89b603 - talk about time with xixi (1 year, 9 months ago)<ping>
+    * 4dfa5c0 - zizhitongjian-liuxiu-dongxuan (1 year, 10 months ago)<ping>
+    * 217ef76 - unnamed (2 years, 1 month ago)<ping>
+
+natually I use "revert":
+
+    ping@ubuntu1404:~/pinggit$ git revert 65dc
+    error: could not revert 65dc5db... vmx-tutorial
+    hint: after resolving the conflicts, mark the corrected paths
+    hint: with 'git add <paths>' or 'git rm <paths>'
+    hint: and commit the result with 'git commit'
+    ping@ubuntu1404:~/pinggit$ git st
+    On branch master
+    Your branch is ahead of 'blog/master' by 1 commit.
+      (use "git push" to publish your local commits)
+    You are currently reverting commit 65dc5db.
+      (fix conflicts and run "git revert --continue")
+      (use "git revert --abort" to cancel the revert operation)
+
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            deleted:    docs/tcl_expect_tips.html
+
+    Unmerged paths:
+      (use "git reset HEAD <file>..." to unstage)
+      (use "git add/rm <file>..." as appropriate to mark resolution)
+
+            deleted by them: _posts/2015-09-17-tcl-expect-tips.markdown
+            deleted by them: _posts/2015-11-23-vmx-tutorial.markdown
+            deleted by them: docs/vmx-tutorial.html
+            deleted by them: docs/vmx-tutorial.pdf
+
+it doesn't look work:
+
+    ping@ubuntu1404:~/pinggit$ git lg -20
+    * c87df22 - (HEAD -> master) unnamed (4 days ago)<ping>
+    * 3bc7168 - (blog/master) test (5 months ago)<ping>
+    * f4ec0d2 - test (5 months ago)<ping>
+    * b19cccc - test (5 months ago)<ping>
+    * 3adcadf - test (5 months ago)<ping>
+    * 45f0df9 - test (5 months ago)<ping>
+    * 680c77b - unnamed (5 months ago)<ping>
+    * ba4d8e0 - vmx (9 months ago)<ping>
+    * 996bc75 - unnamed (10 months ago)<ping>
+    * a7319bf - unnamed (10 months ago)<ping>
+    * aa7c5c5 - remove a wrong file (10 months ago)<ping>
+    *   96a9dbb - Merge branch 'master' of https://github.com/pinggit/blog (10 months ago)<ping>
+    |\
+    | * 5f802aa - init (5 years ago)<Linghua Zhang>
+    * 65dc5db - vmx-tutorial (10 months ago)<ping>
+    * 76286e7 - unnamed (1 year, 8 months ago)<ping>
+    ......
+
+    ping@ubuntu1404:~/pinggit$ cd _posts/
+    ping@ubuntu1404:~/pinggit/_posts$ ls -l | grep expect-tips
+    -rwxr-x--- 1 ping ping     215 Jan 21 21:29 2015-09-17-tcl-expect-tips.markdown
+
+commit won't work:
+
+    ping@ubuntu1404:~/pinggit/_posts$ git add -A .
+    ping@ubuntu1404:~/pinggit/_posts$ git cm -m "fix it"
+    U       docs/vmx-tutorial.html
+    U       docs/vmx-tutorial.pdf
+    error: Committing is not possible because you have unmerged files.
+    hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+    hint: as appropriate to mark resolution and make a commit.
+    fatal: Exiting because of an unresolved conflict.
+
+found no solution...so just use "hard reset" to clear it.
+
+    ping@ubuntu1404:~/pinggit$ git reset --hard 76286e7
+    HEAD is now at 76286e7 unnamed
+
+    ping@ubuntu1404:~/pinggit$ git st
+    On branch master
+    nothing to commit, working tree clean
+
+    ping@ubuntu1404:~/pinggit$ git reflog -10
+    76286e7 HEAD@{0}: reset: moving to 76286e7  #<------
+    c87df22 HEAD@{1}: checkout: moving from test-fix to master
+    76286e7 HEAD@{2}: checkout: moving from test to test-fix
+    ......
+
+    ping@ubuntu1404:~/pinggit$ git lg -10
+    * 76286e7 - (HEAD -> master) unnamed (1 year, 8 months ago)<ping>
+    * a7e6c51 - issuechecker (1 year, 8 months ago)<ping>
+    ......
+
+    ping@ubuntu1404:~/pinggit$ git remote -v
+    blog    https://github.com/pinggit/pinggit.github.com (fetch)
+    blog    https://github.com/pinggit/pinggit.github.com (push)
+
+and "force push" to github
+
+    ping@ubuntu1404:~/pinggit$ git push blog master
+    Username for 'https://github.com': pinggit
+    Password for 'https://pinggit@github.com':
+    To https://github.com/pinggit/pinggit.github.com
+     ! [rejected]        master -> master (non-fast-forward)
+    error: failed to push some refs to 'https://github.com/pinggit/pinggit.github.com'
+    hint: Updates were rejected because the tip of your current branch is behind
+    hint: its remote counterpart. Integrate the remote changes (e.g.
+    hint: 'git pull ...') before pushing again.
+    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+    ping@ubuntu1404:~/pinggit$ git push -f blog master
+    Total 0 (delta 0), reused 0 (delta 0)
+    To https://github.com/pinggit/pinggit.github.com
+     + c87df22...76286e7 master -> master (forced update)
+
+ifdef::bookreading[]
+
+== book reading
+
+* liaoxuefeng git
+* Ry's git tutorial
+
+endif::bookreading[]
+
+== basics
+
+go back to last version
+
+    git reset --hard HEAD^
+
+now 'git log' won't display the "previous current" version, use:
+
+    git reflog
+
+check diff between work dir and latest version in repository
+
+    git diff HEAD -- readme.txt 
+
+NOTE: git track changes, not file!
+
+check all old actions and commitIDs:
+
+    ping@ubuntu1404:~/temp/learngit$ git reflog
+    018259a HEAD@{0}: reset: moving to 018259a
+    f045d1e HEAD@{1}: reset: moving to HEAD^
+    018259a HEAD@{2}: commit: append GPL
+    f045d1e HEAD@{3}: commit: add distributed
+    d452688 HEAD@{4}: commit (initial): wrote a readme file
+
+
+== git working dir, stage(index), master, head:
+
+    ![image](https://cloud.githubusercontent.com/assets/2038044/22007720/14061cee-dc43-11e6-948e-e248e190573a.png)
+
+.HEAD
+
+HEAD:: point to latest version of current branch (master)
+HEAD^:: previous version of last branch
+HEAD^^ ::
+HEAD~100 ::
+
+.staging/snapshot/index
+
+prepare for the commit
+
+
+=== chart: basic term (working dir, staged/index, repository/master)
+
+    working dir           staged/indexed area              repository
+                              (snapshot)                committed snapshot
+
+       change    -------->               
+                 add
+       change    -------->               
+                 add
+                                         --------->  v0
+                                         commit
+       change    -------->               
+                 add
+                                         --------->  v1 (HEAD^)
+                                         commit          ^
+       change    -------->                               |
+                 add                                     | reset --hard CMID
+                                                         |
+                                         --------->  v2 (HEAD)
+                                         commit
+
+       change and discard it
+    <--------(-------------------------------------)
+         checkout -- file.txt
+
+       change    -------->               
+                 add
+                 <-------
+                 unstage: 
+                 git reset HEAD file.txt
+
+       change
+       rm file.txt
+                 ------->
+                 git rm
+                                         --------->  vx (HEAD)
+                                         commit (the rm)
+
+discard current change in working dir
+
+    ping@ubuntu1404:~/temp/learngit$ git checkout -- readme.txt
+
+
+== chart: branch
+
+
+
+    HEAD
+    |
+    v
+    master
+    |
+    v
+    a
+
+                HEAD
+                |
+                v
+                master
+                |
+                v
+    a           b
+
+
+.create a branch
+
+    git checkout -b dev
+    Switched to a new branch 'dev'
+
+equals to:
+
+    git branch dev      #<------create a new branch
+    git checkout dev    #<------switch to a branch
+    Switched to branch 'dev'
+
+                master
+                |
+                |
+                v
+    a           b
+                ^
+                |
+                |
+                dev
+                ^
+                |
+                HEAD
+
+.commit new change
+
+    ping@ubuntu1404:~/learngit$ vim readme.txt
+    ping@ubuntu1404:~/learngit$ git add readme.txt
+    ping@ubuntu1404:~/learngit$ git commit -m "branch test"
+    [dev c63c858] branch test
+     1 file changed, 1 insertion(+)
+    ping@ubuntu1404:~/learngit$
+    ping@ubuntu1404:~/learngit$
+    ping@ubuntu1404:~/learngit$ git branch
+    * dev
+      master
+
+                master          
+                |               
+                |               
+                v               
+    a --------> b ------------> c      commit3   
+                                ^         
+                                |         
+                                |
+                                dev
+                                ^
+                                |
+                                HEAD
+
+.switch back to master
+
+    ping@ubuntu1404:~/learngit$ git checkout master
+    Switched to branch 'master'
+    Your branch is up-to-date with 'origin/master'.
+
+                HEAD
+                |               
+                |               
+                master          
+                |               
+                |               
+                v               
+    a --------> b ------------> c      commit3   
+                                ^         
+                                |         
+                                |
+                                dev
+
+== merge
+
+=== fast forward
+
+.merge dev into master
+
+    ping@ubuntu1404:~/learngit$ git merge dev
+    Updating 0cb81a3..c63c858
+    Fast-forward                #<------
+     readme.txt | 1 +
+     1 file changed, 1 insertion(+)
+
+                                HEAD
+                                |               
+                                |               
+                                master          
+                                |               
+                                |               
+                                v               
+    a --------> b ------------> c      commit3   
+                                ^         
+                                |         
+                                |
+                                dev
+
+.delete dev branch
+
+    ping@ubuntu1404:~/learngit$ git branch -d dev
+    Deleted branch dev (was c63c858).
+    ping@ubuntu1404:~/learngit$ git branch
+    * master
+
+                                HEAD
+                                |               
+                                |               
+                                master          
+                                |               
+                                |               
+                                v               
+    a --------> b ------------> c      commit3   
+
+TIPS: to force deleting a branch (which has not been merged into other branches
+ever), use -D
+
+    git br -D branch1
+
+=== confliction
+
+.create and switch to a new branch
+
+    ping@ubuntu1404:~/learngit$ git co -b feature1
+    Switched to a new branch 'feature1'
+
+    ping@ubuntu1404:~/learngit$ git branch
+    * feature1
+      master
+
+.make and commit the change
+
+    ping@ubuntu1404:~/learngit$ vim readme.txt
+    ping@ubuntu1404:~/learngit$ git commit -am "AND simple"
+    [feature1 06025b4] AND simple
+     1 file changed, 1 insertion(+)
+
+.return back to master
+
+now git remind, current local master, is 1 commit ahead of remote(named
+'origin') master:
+
+    ping@ubuntu1404:~/learngit$ git co master
+    Switched to branch 'master'
+    Your branch is ahead of 'origin/master' by 1 commit.        #<------
+      (use "git push" to publish your local commits)
+
+    ping@ubuntu1404:~/learngit$ git branch       
+      feature1                                   
+    * master                                     
+                                                 
+                                                 HEAD             
+                                                 |                
+                                                 |                
+                                                 master           
+                                                 |                
+                                                 |                
+                                                 v                
+                                    ---------->  d1       commit4  
+                                   /             
+                                  /              
+    a --------> b ------------> c                
+                                  \              
+                                   \            
+                                    ---------->  d2       commit5  
+                                                 |                 
+                                                 |                 
+                                                 feature1
+
+now merge generate "confliction"
+
+    ping@ubuntu1404:~/learngit$ git merge feature1
+    Auto-merging readme.txt
+    CONFLICT (content): Merge conflict in readme.txt    #<------
+    Automatic merge failed; fix conflicts and then commit the result.
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch master
+    Your branch is ahead of 'origin/master' by 2 commits.
+      (use "git push" to publish your local commits)
+
+    You have unmerged paths.
+      (fix conflicts and run "git commit")
+
+    Unmerged paths:
+      (use "git add <file>..." to mark resolution)
+
+            both modified:      readme.txt
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+the file looks:
+
+    ping@ubuntu1404:~/learngit$ cat readme.txt
+    Git is a distributed version control system.
+    Git is free software distributed under the GPL.
+    Git has a mutable index called stage.
+    Git tracks changes of files.
+    <<<<<<< HEAD
+    Creating a new branch is quick & simple.
+    =======
+    Creating a new branch is quick AND simple.
+    >>>>>>> feature1
+
+manually resolve the confliction in file:
+
+    Creating a new branch is quick and simple.
+
+now commit:
+
+    ping@ubuntu1404:~/learngit$ git commit -am "conflict fixed"
+    [master 89fb295] conflict fixed
+
+                                                 
+                                                 
+                                                 
+                                                                HEAD              
+                                                                |                 
+                                                                |                 
+                                                                master            
+                                    ---------->  d1 ----------  |                 
+                                   /                          \ |                 
+                                  /                            \v                 
+    a --------> b ------------> c               d               e  
+                                  \                            /
+                                   \                          / 
+                                    ---------->  d2 ---------- 
+                                                 |                 
+                                                 |                 
+                                                 feature1
+
+illustrated by git log:
+
+    ping@ubuntu1404:~/learngit$ git log --pretty=oneline --graph --abbrev-commit
+    *   89fb295 conflict fixed
+    |\
+    | * dae9a4b AND simple      #<------feature1
+    * | 71a9574 & simple        #<------master
+    |/
+    * c63c858 branch test
+    * 0cb81a3 remove test.txt
+    * 1f9259c add test.txt
+    * 3320c2b extra comit than book
+    * 9321a6d git tracks 2nd changes
+    * b85642d git tracks changes
+    * e516429 understand how stage works
+    * 018259a append GPL
+    * f045d1e add distributed
+    * d452688 wrote a readme file
+
+or:
+
+    ping@ubuntu1404:~/learngit$ git log --graph --abbrev-commit
+    *   commit 89fb295
+    |\  Merge: 71a9574 dae9a4b
+    | | Author: ping <songpingemail@gmail.com>
+    | | Date:   Wed Jan 18 00:19:06 2017 -0500
+    | |
+    | |     conflict fixed
+    | |
+    | * commit dae9a4b
+    | | Author: ping <songpingemail@gmail.com>
+    | | Date:   Wed Jan 18 00:10:36 2017 -0500
+    | |
+    | |     AND simple
+    | |
+    * | commit 71a9574
+    |/  Author: ping <songpingemail@gmail.com>
+    |   Date:   Wed Jan 18 00:09:57 2017 -0500
+    |
+    |       & simple
+    |
+    * commit c63c858
+    | Author: ping <songpingemail@gmail.com>
+    | Date:   Tue Jan 17 22:12:50 2017 -0500
+    |
+    |     branch test
+
+now delete the feature1 branch
+
+    ping@ubuntu1404:~/learngit$ git branch -d feature1
+    Deleted branch feature1 (was dae9a4b).
+    ping@ubuntu1404:~/learngit$ git branch
+    * master
+
+=== --no-ff: disable ff
+
+this will generate a new commit when merge. better history record.
+
+merge with no fast forward:
+
+    ping@ubuntu1404:~/learngit$ git co -b dev
+    Switched to a new branch 'dev'
+    ping@ubuntu1404:~/learngit$ vim readme.txt
+    ping@ubuntu1404:~/learngit$ git commit -am "add merge"
+    [dev 8eb7f3f] add merge
+     1 file changed, 1 insertion(+)
+
+    ping@ubuntu1404:~/learngit$ git co master
+    Switched to branch 'master'
+    Your branch is ahead of 'origin/master' by 5 commits.
+      (use "git push" to publish your local commits)
+
+    ping@ubuntu1404:~/learngit$ git merge --no-ff -m "merge with no-ff" dev
+    Merge made by the 'recursive' strategy.
+     readme.txt | 1 +
+     1 file changed, 1 insertion(+)
+
+    ping@ubuntu1404:~/learngit$ git log --graph --abbrev-commit --pretty=oneline
+    *   4e90dfc merge with no-ff        #<------git generated a new commit
+    |\
+    | * 8eb7f3f add merge
+    |/
+    *   89fb295 conflict fixed
+
+    ping@ubuntu1404:~/learngit$ git log --graph --abbrev-commit
+    *   commit 4e90dfc
+    |\  Merge: 89fb295 8eb7f3f
+    | | Author: ping <songpingemail@gmail.com>
+    | | Date:   Wed Jan 18 00:38:24 2017 -0500
+    | |
+    | |     merge with no-ff
+    | |
+    | * commit 8eb7f3f
+    |/  Author: ping <songpingemail@gmail.com>
+    |   Date:   Wed Jan 18 00:37:45 2017 -0500
+    |
+    |       add merge
+    |
+
+.ff merge works like this:
+
+                HEAD
+                |               
+                |               
+                master          
+                |               
+                |               
+                v               
+    a --------> b ------------> c      commit3   
+                                ^         
+                                |         
+                                |
+                                dev
+
+                ||
+                ||
+                ||
+                vv
+
+                                HEAD
+                                |               
+                                |               
+                                master          
+                                |               
+                                |               
+                                v               
+    a --------> b ------------> c      commit3   
+                                ^ (move master/HEAD to current commit of dev)
+                                |         
+                                |
+                                dev
+
+.--no-ff merge:
+
+                HEAD
+                |               
+                |               
+                master          
+                |               
+                |               
+                v               
+    a --------> b ------------> c      commit3   
+                                ^         
+                                |         
+                                |
+                                dev
+
+                ||
+                ||
+                ||
+                vv
+
+                                                HEAD
+                                                |               
+                                                |               
+                                                master          
+                                                |               
+                                                |               
+                                                v               
+    a --------> b ------------> c ------------> d       commit4   
+                                ^           (generated a new commit)
+                                |         
+                                |
+                                dev
+
+NOTE: don't work on master, work on a dev branch; branch off from dev and merge
+back to dev when work done,
+
+=== 3-way merge
+
+also called a "3-way merge":
+
+A 3-way merge occurs when you try to merge two branches whose history has
+diverged. It creates an extra merge commit to function as a link between the
+two branches. As a result, it has two parent commits.
+
+before merge:
+
+master branch commit line:
+
+    ping@ubuntu1404:~/my-git-repo$ git lg
+    * 6932529 - (HEAD -> master) Revert "delete css" (6 minutes ago)<ping>
+    * 84042e4 - Revert "link html pages to stylesheet" (6 minutes ago)<ping>
+    * a3c8ea6 - delete css (7 minutes ago)<ping>
+    * 12ecdfe - link html pages to stylesheet (13 minutes ago)<ping>
+    * 0d57262 - Add CSS stylesheet (16 minutes ago)<ping>
+    * 44f3a80 - Revert "Add navigation links" (51 minutes ago)<ping>    #<---
+    * bfae2e8 - Revert "Add a crazzzy experiment" (4 years, 1 month ago)<Ryan>
+    * e2e188a - Add a crazzzy experiment (4 years, 1 month ago)<Ryan>
+    * ebf439f - (tag: v1.0) Add navigation links (4 years, 1 month ago)<Ryan>
+    * 578959e - Create blue and orange pages (4 years, 1 month ago)<Ryan>
+    * 67af295 - Create index page (4 years, 1 month ago)<Ryan>
+
+    ping@ubuntu1404:~/my-git-repo$ git br
+      crazy
+    * master
+
+    ping@ubuntu1404:~/my-git-repo$ git co crazy
+    Switched to branch 'crazy'
+
+    ping@ubuntu1404:~/my-git-repo$ git br
+    * crazy
+      master
+
+crazy branch commit line:
+
+    ping@ubuntu1404:~/my-git-repo$ git log --oneline --graph
+    * b337c0e add a rainbow to crazy.html       #<------
+    * bfae2e8 Revert "Add a crazzzy experiment"
+    * e2e188a Add a crazzzy experiment
+    * ebf439f Add navigation links
+    * 578959e Create blue and orange pages
+    * 67af295 Create index page
+
+merge: crazy : <-- master
+
+    ping@ubuntu1404:~/my-git-repo$ git merge master
+
+    Merge made by the 'recursive' strategy.
+     blue.html   |  3 ---
+     index.html  | 11 -----------
+     orange.html |  3 ---
+     style.css   | 12 ++++++++++++
+     4 files changed, 12 insertions(+), 17 deletions(-)
+     create mode 100644 style.css
+
+    ping@ubuntu1404:~/my-git-repo$ ls
+    blue.html  index.html  orange.html  rainbow.html  style.css
+
+after merge: 2 commit lines (from both branches) merged together via a new
+commit
+
+----
+ping@ubuntu1404:~/my-git-repo$ git lg
+*   7bdf73f - (HEAD -> crazy) Merge branch 'master' into crazy (88 seconds ago)<ping> <1>
+|\
+| * 6932529 - (master) Revert "delete css" (9 minutes ago)<ping>
+| * 84042e4 - Revert "link html pages to stylesheet" (10 minutes ago)<ping>
+| * a3c8ea6 - delete css (11 minutes ago)<ping>
+| * 12ecdfe - link html pages to stylesheet (17 minutes ago)<ping>
+| * 0d57262 - Add CSS stylesheet (19 minutes ago)<ping>
+| * 44f3a80 - Revert "Add navigation links" (55 minutes ago)<ping>
+* | 7630fb1 - rename crazy.html to rainbow.html (23 minutes ago)<ping>
+* | b337c0e - add a rainbow to crazy.html (32 minutes ago)<ping>
+|/
+* bfae2e8 - Revert "Add a crazzzy experiment" (4 years, 1 month ago)<Ryan>
+* e2e188a - Add a crazzzy experiment (4 years, 1 month ago)<Ryan>
+* ebf439f - (tag: v1.0) Add navigation links (4 years, 1 month ago)<Ryan>
+* 578959e - Create blue and orange pages (4 years, 1 month ago)<Ryan>
+* 67af295 - Create index page (4 years, 1 month ago)<Ryan>
+ping@ubuntu1404:~/my-git-repo$
+----
+
+<1> 3-way merge: a new commit generated, also, indicated by (HEAD -> crazy)
+updated 'HEAD' points to crazy, while head of master branch remains unchanged:
+1 commit behind new HEAD.
+
+illustrated as below (not very accurate in terms of commit numbers)
+
+image::https://cloud.githubusercontent.com/assets/2038044/22128115/27556d78-de6d-11e6-9ad3-ee88e8713db2.png[]
+
+"3-way": 
+
+        (crazy old head)
+        7630fb1 -------\
+                        \   (crazy new head: 'HEAD')
+                         X  7bdf73f(new commit)
+                        /
+        6932529 -------/    
+        (master head remains)
+
+
+now creating a new branch "crazy-alt" off "crazy":
+
+----
+ping@ubuntu1404:~/my-git-repo$ git co -b crazy-alt
+Switched to branch 'crazy-alt'
+
+ping@ubuntu1404:~/my-git-repo$ git br
+  crazy
+* crazy-alt
+  master
+
+ping@ubuntu1404:~/my-git-repo$ git lg
+* 078238e - (HEAD -> crazy-alt, crazy) link index.html to rainbow.html (5 hours ago)<ping> <1>
+* 1e6598d - add css stylesheet to rainbow.html (5 hours ago)<ping>
+*   7bdf73f - Merge branch 'master' into crazy (5 hours ago)<ping>
+|\
+| * 6932529 - (master) Revert "delete css" (6 hours ago)<ping>
+| * 84042e4 - Revert "link html pages to stylesheet" (6 hours ago)<ping>
+----
+
+<1> (HEAD -> crazy-alt, crazy) indicate, now HEAD points to both old branch
+crazy and new branch crazy-alt - they are with the same commit.
+
+== stash
+
+* can be applied to any branch, not just the one from which it was created.
+* usage scenario:
+  - before committing changes in branch 1 (topic branch), need to work on other
+    branch 2 (master), then come back branch 1 and continue
+  - realized changed made to wrong branch. just to stash changes, switch branch
+    and apply stash
+
+while working on dev, in the middle of some changes...
+
+    ping@ubuntu1404:~/learngit$ git co dev
+    Switched to branch 'dev'
+    ping@ubuntu1404:~/learngit$ ls
+    LICENSE  readme.txt
+
+change1: created a new file:
+
+    ping@ubuntu1404:~/learngit$ touch hello.py
+    ping@ubuntu1404:~/learngit$
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            hello.py
+
+    nothing added to commit but untracked files present (use "git add" to track)
+
+change2: changed an existing file:
+
+    ping@ubuntu1404:~/learngit$ vim readme.txt
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   readme.txt
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            hello.py
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+now need to fix some issue in master -- before current work in dev can be
+commited: use stash to save the work:
+
+stash the existing file change:
+
+    ping@ubuntu1404:~/learngit$ git stash
+    Saved working directory and index state WIP on dev: 8eb7f3f add merge
+    HEAD is now at 8eb7f3f add merge
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            hello.py
+
+    nothing added to commit but untracked files present (use "git add" to track)
+
+stage new file and stash the work in new file:
+
+    ping@ubuntu1404:~/learngit$ git add hello.py
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   hello.py
+
+    ping@ubuntu1404:~/learngit$ git stash
+    Saved working directory and index state WIP on dev: 8eb7f3f add merge
+    HEAD is now at 8eb7f3f add merge
+
+now all "pending" works are saved/stashed (with 2 stashes):
+
+    ping@ubuntu1404:~/learngit$ git stash list
+    stash@{0}: WIP on dev: 8eb7f3f add merge
+    stash@{1}: WIP on dev: 8eb7f3f add merge
+
+now working dir is clean, 
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    nothing to commit, working directory clean
+
+go to master to fix the issue, by creating a temp branch
+
+    ping@ubuntu1404:~/learngit$ git branch
+    * dev
+      master
+    ping@ubuntu1404:~/learngit$ git co master
+    Switched to branch 'master'
+    Your branch is ahead of 'origin/master' by 7 commits.
+      (use "git push" to publish your local commits)
+
+
+    ping@ubuntu1404:~/learngit$ git co -b issue-101
+    Switched to a new branch 'issue-101'
+
+fix issue and commit:
+
+    ping@ubuntu1404:~/learngit$ vim readme.txt
+    ping@ubuntu1404:~/learngit$ git commit -am "fix bug 101"
+    [issue-101 e506c8a] fix bug 101
+     1 file changed, 1 insertion(+), 1 deletion(-)
+
+go to master to merge the fix:
+
+    ping@ubuntu1404:~/learngit$ git co master
+    Switched to branch 'master'
+    Your branch is ahead of 'origin/master' by 7 commits.
+      (use "git push" to publish your local commits)
+    ping@ubuntu1404:~/learngit$
+    ping@ubuntu1404:~/learngit$ git merge --no-ff -m "merged bug fix 101" issue-101
+    Merge made by the 'recursive' strategy.
+     readme.txt | 2 +-
+     1 file changed, 1 insertion(+), 1 deletion(-)
+
+now, return back to continue the "pending" old work:
+
+    ping@ubuntu1404:~/learngit$ git co dev
+    Switched to branch 'dev'
+    ping@ubuntu1404:~/learngit$
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    nothing to commit, working directory clean
+
+before continue, need to recover back to exactly where we left off:
+
+    ping@ubuntu1404:~/learngit$ git stash list
+    stash@{0}: WIP on dev: 8eb7f3f add merge
+    stash@{1}: WIP on dev: 8eb7f3f add merge
+
+apply 2nd stash, and drop the stash (since it's been applied and no use anymore)
+
+    ping@ubuntu1404:~/learngit$ git stash pop
+    On branch dev
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   hello.py
+
+    Dropped refs/stash@{0} (06ad349f04842443638f83e7df2237cce8628763)
+
+apply the 1st stash and drop it as well:
+
+    ping@ubuntu1404:~/learngit$ git stash list
+    stash@{0}: WIP on dev: 8eb7f3f add merge
+
+    ping@ubuntu1404:~/learngit$ git stash pop
+    On branch dev
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   hello.py
+
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   readme.txt
+
+    Dropped refs/stash@{0} (7a4b35e09c098a6a59a9e98e4ef9ce56833018dd)
+
+now back to exactly where we left off, and continue the previous work in dev:
+
+    ping@ubuntu1404:~/learngit$ git stash list
+    ping@ubuntu1404:~
+
+now add the 2 changes at one go with 'git add -A .' and commit:
+
+    ping@ubuntu1404:~/learngit$ git add -A .
+    ping@ubuntu1404:~/learngit$ git commit -m "add hello.py and change readme.txt"
+    [dev 0df2b58] add hello.py and change readme.txt
+     2 files changed, 1 insertion(+)
+     create mode 100755 hello.py
+
+. a new (untracked) file
+. change to existing (tracked) file
+
+
+[TIPS]
+====
+to apply a specific stash:
+
+    git stash apply stash@{0}
+
+to just apply but not to drop the stash:
+
+    git stash apply
+
+to drop(delete) a stash:
+
+    git stash drop
+
+====
+
+== remote
+
+* a bookmark for a full path to another repo
+
+=== local FS
+
+create a clone
+
+    ping@ubuntu1404:~/Dropbox/git$ git clone my-git-repo marys-repo
+    Cloning into 'marys-repo'...
+    done.
+    ping@ubuntu1404:~/Dropbox/git$ ls -lct
+    total 56
+    drwxrwxr-x 4 ping ping  4096 Jan 21 00:00 marys-repo        #<------
+    drwxrwxr-x 4 ping ping  4096 Jan 20 23:59 my-git-repo
+
+==== "local" config:
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git config user.name "Mary"
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git config user.email mary.example@rypress.com
+
+this config is only valid for the new clone repo, not for global, or any other
+repo
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ cat .git/config
+    [core]
+            repositoryformatversion = 0
+            filemode = true
+            bare = false
+            logallrefupdates = true
+    [remote "origin"]
+            url = /home/ping/Dropbox/git/my-git-repo
+            fetch = +refs/heads/*:refs/remotes/origin/*
+    [branch "master"]
+            remote = origin
+            merge = refs/heads/master
+    [user]
+            name = Mary
+            email = mary.example@rypress.com
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ cat ../my-git-repo/.git/config
+    [core]
+            repositoryformatversion = 0
+            filemode = true
+            bare = false
+            logallrefupdates = true
+            ignorecase = true
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$
+
+now check out a branch, commit some changes and merge back to master:
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git co -b bio-page
+    Switched to a new branch 'bio-page'
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ vim about/mary.html
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git cm -am "add bio page for mary"
+    [bio-page 87c08e6] add bio page for mary
+     1 file changed, 18 insertions(+), 1 deletion(-)
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git co master
+    Switched to branch 'master'
+    Your branch is up-to-date with 'origin/master'.
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git merge bio-page
+    Updating 81a6beb..87c08e6
+    Fast-forward
+     about/mary.html | 19 ++++++++++++++++++-
+     1 file changed, 18 insertions(+), 1 deletion(-)
+
+every commit will now be tagged with this new local name:
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git log -1
+    commit 87c08e662032ab32a5cd5e30aabacf5b07709160
+    Author: Mary <mary.example@rypress.com>     #<------
+    Date:   Sat Jan 21 00:12:30 2017 -0500
+
+        add bio page for mary
+
+----
+ping@ubuntu1404:~/marys-repo$ git lg -2
+* 87c08e6 - (HEAD -> master, bio-page) add bio page for mary (43 minutes ago)<Mary>
+* 81a6beb - (origin/master, origin/HEAD) Add green page (4 years, 1 month ago)<Ryan>
+----
+
+==== add remote 
+
+git-remote - Manage set of tracked repositories
+
+connections to other repos:
+
+by the nature of "clone", a cloned repo already inherits a "remote" repo - the
+repo from which it cloned:
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git remote
+    origin
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ git remote -v
+    origin  /home/ping/Dropbox/git/my-git-repo (fetch)
+    origin  /home/ping/Dropbox/git/my-git-repo (push)
+
+our orignal repo may not have any remote:
+
+    ping@ubuntu1404:~/Dropbox/git/marys-repo$ cd ../my-git-repo/
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git remote -v
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$
+
+but we can add some remote:
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git remote add mary ../marys-repo/
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git remote -v
+    mary    ../marys-repo/ (fetch)
+    mary    ../marys-repo/ (push)
+
+==== 'fetch' remote branches in
+
+git-fetch - Download objects and refs from another repository
+
+now we have a remote, with that we now can fetch some remote branches:
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git branch -r
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git fetch mary
+    remote: Counting objects: 4, done.
+    remote: Compressing objects: 100% (4/4), done.
+    remote: Total 4 (delta 1), reused 0 (delta 0)
+    Unpacking objects: 100% (4/4), done.
+    From ../marys-repo
+     * [new branch]      bio-page   -> mary/bio-page
+     * [new branch]      master     -> mary/master
+
+fetched remote branches:
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git branch -r
+      mary/bio-page
+      mary/master
+
+local branch remain unchanged:
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git br
+    * master
+
+we can switch to a remote branch:
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git co mary/master
+    Note: checking out 'mary/master'.
+
+    You are in 'detached HEAD' state. You can look around, make experimental
+    changes and commit them, and you can discard any commits you make in this
+    state without impacting any branches by performing another checkout.
+
+    If you want to create a new branch to retain commits you create, you may
+    do so (now or later) by using -b with the checkout command again. Example:
+
+      git checkout -b <new-branch-name>
+
+    HEAD is now at 87c08e6... add bio page for mary
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git br
+    * (HEAD detached at mary/master)
+      master
+
+this results in a "detached HEAD" state.
+
+check what has been done between in remote 'master' branch (that is not in
+local 'master')
+
+    ping@ubuntu1404:~/my-git-repo$ git log master..mary/master --stat
+    commit 87c08e662032ab32a5cd5e30aabacf5b07709160
+    Author: Mary <mary.example@rypress.com>
+    Date:   Sat Jan 21 00:12:30 2017 -0500
+
+        add bio page for mary
+
+     about/mary.html | 19 ++++++++++++++++++-
+     1 file changed, 18 insertions(+), 1 deletion(-)
+
+and, nothing has been done in local master yet since remote repo got cloned 
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git log mary/master..master --stat
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$
+
+==== merge a remote branch in
+
+now go to master branch and merge a remote branch in
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git co master
+    Previous HEAD position was 87c08e6... add bio page for mary
+    Switched to branch 'master'
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git br
+    * master
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git reflog -5
+    81a6beb HEAD@{0}: checkout: moving from 87c08e662032ab32a5cd5e30aabacf5b07709160 to master
+    87c08e6 HEAD@{1}: checkout: moving from master to mary/master
+    81a6beb HEAD@{2}: merge green-page: Fast-forward
+    5fa9624 HEAD@{3}: checkout: moving from green-page to master
+    81a6beb HEAD@{4}: checkout: moving from 81a6bebc4a2ed23ee91977bfd9075e39891f3875 to green-page
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git lg -5
+    * 81a6beb - (HEAD -> master) Add green page (4 years, 1 month ago)<Ryan>
+    * d5c67ef - Add yellow page (4 years, 1 month ago)<Ryan>
+    * 04a0735 - Add red page (4 years, 1 month ago)<Ryan>
+    * 5fa9624 - Add link to about section in home page (4 years, 1 month ago)<Ryan>
+    * b490c20 - Begin creating bio pages (4 years, 1 month ago)<Ryan>
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git merge mary/master
+    Updating 81a6beb..87c08e6
+    Fast-forward
+     about/mary.html | 19 ++++++++++++++++++-
+     1 file changed, 18 insertions(+), 1 deletion(-)
+
+this is a ff merge:
+
+    ping@ubuntu1404:~/my-git-repo$ git reflog -3
+    87c08e6 HEAD@{0}: merge mary/master: Fast-forward   #<------
+    81a6beb HEAD@{1}: checkout: moving from 87c08e662032ab32a5cd5e30aabacf5b07709160 to master
+    87c08e6 HEAD@{2}: checkout: moving from master to mary/master
+
+now, our local master branch is synched with remote master branch:
+ 
+    ping@ubuntu1404:~/my-git-repo$ git lg -2
+    * 87c08e6 - (HEAD -> master, mary/master, mary/bio-page) add bio page for mary (62 minutes ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+
+==== 'push' to a remote repo
+
+git-push - Update remote refs along with associated objects
+
+    ping@ubuntu1404:~/my-git-repo$ git branch dummy
+    ping@ubuntu1404:~/my-git-repo$ git br
+      dummy
+    * master
+
+    ping@ubuntu1404:~/my-git-repo$ git push mary dummy
+    Total 0 (delta 0), reused 0 (delta 0)
+    To ../marys-repo/
+     * [new branch]      dummy -> dummy
+
+this reads: "push" to remote repo "mary" a local branch "dummy"
+
+    ping@ubuntu1404:~/my-git-repo$ cd ../marys-repo
+
+    ping@ubuntu1404:~/marys-repo$ git br
+      bio-page
+      dummy
+    * master
+
+NOTE: never push into other people's repo!
+
+==== push a local tag
+
+a local tag won't be automatically pushed associated with a branch
+
+
+create a local tag for a branch
+
+    ping@ubuntu1404:~/my-git-repo$ git br
+    * master
+    ping@ubuntu1404:~/my-git-repo$ git tag -a v2.0 -m "an even stable version"
+
+    ping@ubuntu1404:~/my-git-repo$ git tag
+    v1.0
+    v2.0
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * 87c08e6 - (HEAD -> master, tag: v2.0, mary/master, mary/dummy, mary/bio-page) add bio page for mary (77 minutes ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+    * d5c67ef - Add yellow page (4 years, 1 month ago)<Ryan>
+
+push the branch got rejected: nothing to push
+
+    ping@ubuntu1404:~/my-git-repo$ git push mary master
+    Everything up-to-date       #<------
+
+the tag is not pushed into remote:
+
+    ping@ubuntu1404:~/my-git-repo$ cd ../marys-repo
+    ping@ubuntu1404:~/marys-repo$ git tag
+    v1.0
+
+the tag should be pushed seperately:
+
+    ping@ubuntu1404:~/my-git-repo$ git push mary v2.0
+    Counting objects: 1, done.
+    Writing objects: 100% (1/1), 162 bytes | 0 bytes/s, done.
+    Total 1 (delta 0), reused 0 (delta 0)
+    To ../marys-repo/
+     * [new tag]         v2.0 -> v2.0
+
+    ping@ubuntu1404:~/my-git-repo$ cd ../marys-repo
+    ping@ubuntu1404:~/marys-repo$ git tag
+    v1.0
+    v2.0
+
+    ping@ubuntu1404:~/marys-repo$ git lg -2
+    * 87c08e6 - (HEAD -> master, tag: v2.0, bio-page) add bio page for mary (77 minutes ago)<Mary>
+    * 81a6beb - (origin/master, origin/HEAD) Add green page (4 years, 1 month ago)<Ryan>
+
+=== github
+
+. create a private key
+
+    ping@ubuntu1404:~$ ssh-keygen -t rsa -C "songpingemail@gmail.com"
+
+. add to github (from github web page)
+
+. test:
+
+    ping@ubuntu1404:~$ ssh pinggit.github.com
+    X11 forwarding request failed on channel 0
+    PTY allocation request failed on channel 0
+    Hi pinggit! You've successfully authenticated, but GitHub does not provide shell access.
+    Connection to github.com closed.
+
+.create an empty repo in github (from github web page)
+
+github -> create repo
+
+. push
+
+name a remote repo as "origin"
+
+    ping@ubuntu1404:~/learngit$ git remote add origin https://github.com/pinggit/learngit.git
+
+    ping@ubuntu1404:~/learngit$ git remote -v
+    origin  https://github.com/pinggit/learngit.git (fetch)
+    origin  https://github.com/pinggit/learngit.git (push)
+
+push a local repo (and the 'master' branch) to the remote repo 'origin':
+
+    ping@ubuntu1404:~/learngit$ git push -u origin master
+    Username for 'https://github.com': pinggit
+    Password for 'https://pinggit@github.com':
+    Counting objects: 24, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (20/20), done.
+    Writing objects: 100% (24/24), 2.04 KiB | 0 bytes/s, done.
+    Total 24 (delta 6), reused 0 (delta 0)
+    remote: Resolving deltas: 100% (6/6), done.
+    To https://github.com/pinggit/learngit.git
+     * [new branch]      master -> master
+    Branch master set up to track remote branch master from origin.
+
+[NOTE]
+====
+which branches to push and which not?
+
+* master and dev reflect the "main" work and progress, so they need to be
+  pushed/synced
+* bug fix branches, stay locally, normally no need
+* feature branches, depends
+
+====
+
+before:
+
+image::https://cloud.githubusercontent.com/assets/2038044/22091005/7ec223f4-ddc2-11e6-8b37-063f6430b1ea.png[]
+
+after:
+
+image::https://cloud.githubusercontent.com/assets/2038044/22091029/a17a103c-ddc2-11e6-9f7d-a0f3403cbcb5.png[]
+
+
+push a local dev branch:
+
+    ping@ubuntu1404:~/learngit$ git push origin dev
+    Username for 'https://github.com': pinggit
+    Password for 'https://pinggit@github.com':
+    Total 0 (delta 0), reused 0 (delta 0)
+    To https://github.com/pinggit/learngit.git
+     * [new branch]      dev -> dev
+
+now (other folks), clone the remote repo into a local folder, named 'learngit2':
+
+    ping@ubuntu1404:~$ git clone https://github.com/pinggit/learngit learngit2
+    Cloning into 'learngit2'...
+    remote: Counting objects: 50, done.
+    remote: Compressing objects: 100% (29/29), done.
+    remote: Total 50 (delta 17), reused 50 (delta 17), pack-reused 0
+    Unpacking objects: 100% (50/50), done.
+    Checking connectivity... done.
+
+by default, only the 'master' branch is visible:
+
+    ping@ubuntu1404:~/learngit2$ git branch
+    * master
+
+to recreate the dev branch:
+
+    ping@ubuntu1404:~/learngit2$ git checkout -b dev origin/dev
+    Branch dev set up to track remote branch dev from origin.
+    Switched to a new branch 'dev'
+
+    ping@ubuntu1404:~/learngit2$ git branch
+    * dev
+      master
+
+    ping@ubuntu1404:~/learngit2$ ls -l
+    total 1
+    -rwxr-x--- 1 ping ping   0 Jan 18 21:24 hello.py
+    -rwxr-x--- 1 ping ping   0 Jan 18 21:22 LICENSE
+    -rwxr-x--- 1 ping ping 240 Jan 18 21:24 readme.txt
+
+now he can switch between different branches like the repo originator:
+
+    ping@ubuntu1404:~/learngit2$ git co master
+    Switched to branch 'master'
+    Your branch is up-to-date with 'origin/master'.
+
+    ping@ubuntu1404:~/learngit2$ ls -l
+    total 1
+    -rwxr-x--- 1 ping ping   0 Jan 18 21:22 LICENSE
+    -rwxr-x--- 1 ping ping 220 Jan 18 21:24 readme.txt
+
+    ping@ubuntu1404:~/learngit2$ git checkout dev
+    Switched to branch 'dev'
+    Your branch is up-to-date with 'origin/dev'.
+
+    ping@ubuntu1404:~/learngit2$ ls -l
+    total 1
+    -rwxr-x--- 1 ping ping   0 Jan 18 21:24 hello.py
+    -rwxr-x--- 1 ping ping   0 Jan 18 21:22 LICENSE
+    -rwxr-x--- 1 ping ping 240 Jan 18 21:24 readme.txt
+
+now he can work on 'dev' branch, make changes, commit and push to remote repo:
+
+    ping@ubuntu1404:~/learngit2$ vim hello.py
+    ping@ubuntu1404:~/learngit2$ git add -A .
+    ping@ubuntu1404:~/learngit2$ git commit -m "add /usr/bin/env python"
+    [dev e566ff5] add /usr/bin/env python
+     1 file changed, 1 insertion(+)
+
+    ping@ubuntu1404:~/learngit2$ git push origin dev
+    Username for 'https://github.com': pinggit
+    Password for 'https://pinggit@github.com':
+    Counting objects: 6, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (2/2), done.
+    Writing objects: 100% (3/3), 337 bytes | 0 bytes/s, done.
+    Total 3 (delta 0), reused 0 (delta 0)
+    To https://github.com/pinggit/learngit
+       0df2b58..e566ff5  dev -> dev
+
+
+assuming you also made some changes to hello.py, and want to push to remote
+repo too:
+
+    ping@ubuntu1404:~/learngit$ vim hello.py
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   hello.py
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+    ping@ubuntu1404:~/learngit$ git commit -am "add coding: utf-8"
+    [dev ad9a8eb] add coding: utf-8
+     1 file changed, 2 insertions(+)
+
+    ping@ubuntu1404:~/learngit$ git push origin dev
+    To https://github.com/pinggit/learngit.git
+     ! [rejected]        dev -> dev (fetch first)
+    error: failed to push some refs to 'https://github.com/pinggit/learngit.git'
+    hint: Updates were rejected because the remote contains work that you do
+    hint: not have locally. This is usually caused by another repository pushing
+    hint: to the same ref. You may want to first integrate the remote changes
+    hint: (e.g., 'git pull ...') before pushing again.
+    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+the push failed, git reminds you need to "pull" the changes on remote repo
+first:
+
+    ping@ubuntu1404:~/learngit$ git pull
+    remote: Counting objects: 3, done.
+    remote: Compressing objects: 100% (2/2), done.
+    remote: Total 3 (delta 0), reused 3 (delta 0), pack-reused 0
+    Unpacking objects: 100% (3/3), done.
+    From https://github.com/pinggit/learngit
+       0df2b58..e566ff5  dev        -> origin/dev
+    There is no tracking information for the current branch.
+    Please specify which branch you want to merge with.
+    See git-pull(1) for details
+
+        git pull <remote> <branch>
+
+    If you wish to set tracking information for this branch you can do so with:
+
+        git branch --set-upstream-to=origin/<branch> dev
+
+it failed. because git does not know from which remote branch you want to merge
+your change with. git also reminded what to do: specify a remote branch (a
+"upstream" branch) that you want to link to current branch:
+
+    ping@ubuntu1404:~/learngit$ git branch --set-upstream-to=origin/dev dev
+    Branch dev set up to track remote branch dev from origin.
+
+    ping@ubuntu1404:~/learngit$ git branch
+    * dev
+      issue-101
+      master
+
+now pull will (almost) succeed, but with conflicitons:
+
+    ping@ubuntu1404:~/learngit$ git pull
+    Auto-merging hello.py
+    CONFLICT (content): Merge conflict in hello.py
+    Automatic merge failed; fix conflicts and then commit the result.
+
+check the confliction in file:
+
+    ping@ubuntu1404:~/learngit$ cat hello.py
+    #!/usr/bin/env python
+    <<<<<<< HEAD                #<------the change by latest local commit - current HEAD
+    # -*- coding: utf8 -*-      #<------change1: added this line
+    =======                     #<------change2: nothing - no above line
+    >>>>>>> e566ff52...         #<------a change by a non-local commit (by other folks)
+
+to confirm to which commit your commit is conflicting with:
+
+    ping@ubuntu1404:~/learngit$ git log | grep e566     #<------not by you
+
+    ping@ubuntu1404:~/learngit$ cd ~/learngit2
+    ping@ubuntu1404:~/learngit2$ git log | grep e566    #<------by user2
+    commit e566ff52c29e9097f95eddb30ebda1f846f8d6ca
+
+now trying to fix the confliction, then add, commit and push.
+
+    ping@ubuntu1404:~/learngit$ git commit -am "merge with user2 & fix confliction hello.py"
+    [dev 024b752] merge with user2 & fix confliction hello.py
+
+    ping@ubuntu1404:~/learngit$ git push origin dev
+    Counting objects: 9, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (3/3), done.
+    Writing objects: 100% (4/4), 498 bytes | 0 bytes/s, done.
+    Total 4 (delta 1), reused 0 (delta 0)
+    remote: Resolving deltas: 100% (1/1), done.
+    To https://github.com/pinggit/learngit.git
+       e566ff5..024b752  dev -> dev
+
+== centralized workflow
+
+image::https://cloud.githubusercontent.com/assets/2038044/22178286/00720b28-e000-11e6-8db9-5724e7008944.png[]
+
+
+=== create the central/hub repo
+
+create an empty (bare) repo named "central-repo" in github
+
+add it to our repo as a remote:
+
+    ping@ubuntu1404:~/Dropbox/git$ cd my-git-repo/
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git remote -v
+    origin  https://github.com/pinggit/central-repo.git (fetch)
+    origin  https://github.com/pinggit/central-repo.git (push)
+
+push local master branch into it.
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git push origin master
+    Counting objects: 81, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (78/78), done.
+    Writing objects: 100% (81/81), 9.34 KiB | 0 bytes/s, done.
+    Total 81 (delta 37), reused 0 (delta 0)
+    remote: Resolving deltas: 100% (37/37), done.
+    To https://github.com/pinggit/central-repo.git
+     * [new branch]      master -> master
+
+download(clone) the remote repo to check it's info:
+
+    ping@ubuntu1404:~/Dropbox/git$ git clone https://github.com/pinggit/central-repo.git
+    Cloning into 'central-repo'...
+    remote: Counting objects: 81, done.
+    remote: Compressing objects: 100% (41/41), done.
+    remote: Total 81 (delta 37), reused 81 (delta 37), pack-reused 0
+    Unpacking objects: 100% (81/81), done.
+
+    ping@ubuntu1404:~/Dropbox/git$ cd central-repo/
+    ping@ubuntu1404:~/Dropbox/git/central-repo$ ls
+    about  blue.html  green.html  index.html  news-1.html  news-2.html
+    orange.html  rainbow.html  red.html  style.css  yellow.html
+
+    ping@ubuntu1404:~/Dropbox/git/central-repo$ git lg
+    * 87c08e6 - (HEAD -> master, origin/master, origin/HEAD) add bio page for mary (14 hours ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+    * d5c67ef - Add yellow page (4 years, 1 month ago)<Ryan>
+    ......
+
+=== DE1: push change1
+
+create and commit some local changes
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ vim co -b news-item
+    2 files to edit
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git co -b news-item
+    Switched to a new branch 'news-item'
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ vim news-3.html
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ vim index.html
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git st
+    On branch news-item
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   index.html
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            news-3.html
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git lg -2
+    * 87c08e6 - (HEAD -> news-item, tag: v2.0, origin/master, master) add bio page for mary (15 hours ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git reflog -2
+    87c08e6 HEAD@{0}: checkout: moving from master to news-item
+    87c08e6 HEAD@{1}: merge mary/master: Fast-forward
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git add news-3.html index.html
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git co master
+    Switched to branch 'master'
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git merge news-item
+    Updating 87c08e6..0545711
+    Fast-forward
+     index.html  |  1 +
+     news-3.html | 17 +++++++++++++++++
+     2 files changed, 18 insertions(+)
+     create mode 100644 news-3.html
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git br -d news-item
+    Deleted branch news-item (was 0545711).
+
+push to the remote (central) repo:
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ git push origin master
+    Counting objects: 8, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (8/8), done.
+    Writing objects: 100% (8/8), 1.28 KiB | 0 bytes/s, done.
+    Total 8 (delta 3), reused 0 (delta 0)
+    remote: Resolving deltas: 100% (3/3), completed with 2 local objects.
+    To https://github.com/pinggit/central-repo.git
+       81a6beb..0545711  master -> master
+
+visualize as:
+
+image::https://cloud.githubusercontent.com/assets/2038044/22177267/74895aec-dfe8-11e6-9686-62cef09946f0.png[]
+
+=== DE2: push change2
+
+another DE now commit a change
+
+    ping@ubuntu1404:~/marys-repo$ git co -b css-edits
+    Switched to a new branch 'css-edits'
+
+    ping@ubuntu1404:~/marys-repo$ vim style.css
+    ping@ubuntu1404:~/marys-repo$ git cm -am "add css styles for headings"
+    [css-edits e90a427] add css styles for headings
+     1 file changed, 9 insertions(+)
+
+and forget a second change:
+
+    ping@ubuntu1404:~/marys-repo$ vim style.css
+
+    ping@ubuntu1404:~/marys-repo$ git cm -am "add css styles for 3rd level headings"
+    [css-edits 678f397] add css styles for 3rd level headings
+     1 file changed, 4 insertions(+)
+
+do interactive rebase - squash the 2nd commit and just merge it into the 1st one
+
+    pick e90a427 add css styles for headings
+    squash 678f397 add css styles for 3rd level headings
+
+    ping@ubuntu1404:~/marys-repo$ git rebase -i master
+    [detached HEAD 0421370] Add css styles for headings (after rebase)
+     Date: Sat Jan 21 14:49:19 2017 -0500
+     1 file changed, 13 insertions(+)
+    Successfully rebased and updated refs/heads/css-edits.
+    ping@ubuntu1404:~/marys-repo$
+
+[NOTE]
+====
+one of the goodness of always using a new branch to develop new features,
+is this rebase command:
+
+    rebase -i master'
+
+will always pop up all commits since (not yet in) 'master', automatically. no
+need to figure out what changes need to be rebased.
+====
+
+
+=== DE2: push got rejected
+
+now publish/push to central repo will get rejected:
+
+    ping@ubuntu1404:~/marys-repo$ git push origin master
+    To https://github.com/pinggit/central-repo.git
+     ! [rejected]        master -> master (fetch first)
+     error: failed to push some refs to 'https://github.com/pinggit/central-repo.git'
+     hint: Updates were rejected because the remote contains work that you do
+     hint: not have locally. This is usually caused by another repository pushing
+     hint: to the same ref. You may want to first integrate the remote changes
+     hint: (e.g., 'git pull ...') before pushing again.
+     hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+
+to find out what has been done from the remote (that is not merged in local
+yet), fetch remote repo, then 'git log a..b' to compare the work.
+
+////
+below is not good method...
+
+to look at the problem, clone/update(with 'pull')  the remote repo and check
+the current state of it:
+
+    ping@ubuntu1404:~/central-repo$ git pull
+    remote: Counting objects: 8, done.
+    remote: Compressing objects: 100% (5/5), done.
+    remote: Total 8 (delta 3), reused 8 (delta 3), pack-reused 0
+    Unpacking objects: 100% (8/8), done.
+    From https://github.com/pinggit/central-repo
+       81a6beb..0545711  master     -> origin/master
+    Updating 81a6beb..0545711
+    Fast-forward
+     about/mary.html | 19 ++++++++++++++++++-
+     index.html      |  1 +
+     news-3.html     | 17 +++++++++++++++++
+     3 files changed, 36 insertions(+), 1 deletion(-)
+     create mode 100644 news-3.html
+
+there are already some work done (by DE1), that is not in our local repo:
+
+the new work in remote:
+
+    ping@ubuntu1404:~/central-repo$ git lg -3
+    * 0545711 - (HEAD -> master, origin/master, origin/HEAD) add 3rd news item (47 minutes ago)<ping>   #<------
+    * 87c08e6 - add bio page for mary (15 hours ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+
+the local work to be pushed:
+
+    ping@ubuntu1404:~/central-repo$ cd ../marys-repo
+    ping@ubuntu1404:~/marys-repo$ git lg -3
+    * 0421370 - (HEAD -> master) Add css styles for headings (after rebase) (39 minutes ago)<Mary>      #<------
+    * 87c08e6 - (tag: v2.0, bio-page) add bio page for mary (15 hours ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+
+so this requires to 'pull' the remote work into local repo first
+////
+
+=== DE2: rebase and then push
+
+    ping@ubuntu1404:~/marys-repo$ git rebase origin/master
+    First, rewinding head to replay your work on top of it...
+    Applying: Add css styles for headings (after rebase)
+
+----
+ping@ubuntu1404:~/marys-repo$ git lg -3
+* fdcc000 - (HEAD -> master) Add css styles for headings (after rebase) (49 seconds ago)<Mary> <1>
+* 0545711 - (origin/master) add 3rd news item (63 minutes ago)<ping> <2>
+* 87c08e6 - (tag: v2.0, bio-page) add bio page for mary (16 hours ago)<Mary>
+----
+
+<1> to rebase local master's all new updates ...
+<2> on top of tip of remote master's latest update
+
+image::https://cloud.githubusercontent.com/assets/2038044/22177700/76b3a3a0-dff1-11e6-966d-abba4535f5f4.png[]
+image::https://cloud.githubusercontent.com/assets/2038044/22177702/80bbdb4c-dff1-11e6-8214-b4c0ca10ce7d.png[]
+
+now push will succeed
+
+    ping@ubuntu1404:~/marys-repo$ git push origin master
+    Counting objects: 3, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (3/3), done.
+    Writing objects: 100% (3/3), 481 bytes | 0 bytes/s, done.
+    Total 3 (delta 1), reused 0 (delta 0)
+    remote: Resolving deltas: 100% (1/1), completed with 1 local objects.
+    To https://github.com/pinggit/central-repo.git
+       0545711..fdcc000  master -> master
+
+image::https://cloud.githubusercontent.com/assets/2038044/22177712/c810a25c-dff1-11e6-9844-9ba30ca0b778.png[]
+
+=== DE1: fetch
+
+DE1 now can fetch all of the remote branches
+
+    ping@ubuntu1404:~/central-repo$ cd ../my-git-repo
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * 0545711 - (HEAD -> master, origin/master) add 3rd news item (3 hours ago)<ping>
+    * 87c08e6 - (tag: v2.0) add bio page for mary (17 hours ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+
+    ping@ubuntu1404:~/my-git-repo$ git fetch origin
+    remote: Counting objects: 3, done.
+    remote: Compressing objects: 100% (2/2), done.
+    remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0
+    Unpacking objects: 100% (3/3), done.
+    From https://github.com/pinggit/central-repo
+       0545711..fdcc000  master     -> origin/master
+
+got a remote branch 'master':
+
+    ping@ubuntu1404:~/my-git-repo$ git branch -r
+      origin/master
+
+    ping@ubuntu1404:~/my-git-repo$ git br
+    * master
+
+    ping@ubuntu1404:~/my-git-repo$ git st
+    On branch master
+    nothing to commit, working tree clean
+
+=== DE1: check what is new in the remote branch:
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * 0545711 - (HEAD -> master) add 3rd news item (3 hours ago)<ping>
+    * 87c08e6 - (tag: v2.0) add bio page for mary (17 hours ago)<Mary>
+    * 81a6beb - Add green page (4 years, 1 month ago)<Ryan>
+
+    ping@ubuntu1404:~/my-git-repo$ git lg origin/master -3
+    * fdcc000 - (origin/master) Add css styles for headings (after rebase) (2 hours ago)<Mary>
+    * 0545711 - (HEAD -> master) add 3rd news item (3 hours ago)<ping>
+    * 87c08e6 - (tag: v2.0) add bio page for mary (17 hours ago)<Mary>
+
+there is one new change/commit, in remote branch, but not in local branch. 
+
+a simpler way is to use: 
+
+    git lg a..b
+
+this is to tell the 'diff' of b based from a's perspective - those in b but no
+in a:
+
+    ping@ubuntu1404:~/my-git-repo$ git lg master..origin/master
+    * fdcc000 - (origin/master) Add css styles for headings (after rebase) (2 hours ago)<Mary>
+
+    ping@ubuntu1404:~/my-git-repo$ git lg master..origin/master --stat
+    * fdcc000 - (origin/master) Add css styles for headings (after rebase) (2 hours ago)<Mary>
+       style.css | 13 +++++++++++++
+       1 file changed, 13 insertions(+)
+
+nothing new in local but not in remote:
+
+    ping@ubuntu1404:~/my-git-repo$ git lg origin/master..master
+
+=== DE1: (ff) merge remote branch into local:
+
+    ping@ubuntu1404:~/my-git-repo$ git merge origin/master
+    Updating 0545711..fdcc000
+    Fast-forward
+     style.css | 13 +++++++++++++
+     1 file changed, 13 insertions(+)
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * fdcc000 - (HEAD -> master, origin/master) Add css styles for headings (after rebase) (2 hours ago)<Mary>
+    * 0545711 - add 3rd news item (3 hours ago)<ping>
+    * 87c08e6 - (tag: v2.0) add bio page for mary (17 hours ago)<Mary>
+
+
+== distributed workflow
+
+assuming DE1 is the lead DE or maintainer of a project
+
+. DE1 create private repo: priv1
+. DE1 publish/push to public repo: pub1: priv1 -> pub1
+. DE2 clone DE1's public repo as private repo: pub1->priv2
+. DE2 publish/push the work to another public repo: priv2->pub2
+. DE1 pull the work from pub2 into priv1: pub2 -> priv1
+. DE1 publish/push the work from priv1 to pub1: priv1 -> pub1
+
+image::https://cloud.githubusercontent.com/assets/2038044/22179365/766c01ca-e01f-11e6-99b5-de168f24dcee.png[]
+
+. all DEs pull any work from pub1 into priv2: pub1 -> priv2
+
+the integrator workflow requires that everyone pull from a single, official
+repository, while they all push to their own public repositories
+
+image::https://cloud.githubusercontent.com/assets/2038044/22180256/3076ad18-e039-11e6-88d3-0698bf216148.png[]
+
+== patch workflow
+
+* DE2 commit some changes in his private repo priv2: changes -> priv2
+* DE2 generate the patches
+* DE2 send patches to DE1 (maintainer): DE2 email patches -> DE1
+* DE1 apply patches to his private repo: patch -> priv1
+* DE1 push to the central repo: pub1
+* DE2 fetch and merge/rebase (or, just pull) changes from pub1: pub1 -> priv2
+* DE2 merge priv2 to his private master: priv2 -> master
+
+=== DE2 commit some changes
+
+mary commit some new work (called work1) on a branch:
+
+    ping@ubuntu1404:~/marys-repo$ git br
+      bio-page
+    * master
+    ping@ubuntu1404:~/marys-repo$ git co -b pink-page
+    Switched to a new branch 'pink-page'
+
+    ping@ubuntu1404:~/marys-repo$ git br -a
+      bio-page
+      master
+    * pink-page
+      remotes/origin/master
+
+    ping@ubuntu1404:~/marys-repo$ git lg -3
+    * fe71224 - (HEAD -> pink-page, origin/master, master) add pink page (26 hours ago)<john>
+    * fdcc000 - Add css styles for headings (after rebase) (33 hours ago)<Mary>
+    * 0545711 - add 3rd news item (34 hours ago)<ping>
+
+    ping@ubuntu1404:~/marys-repo$ git ref -3
+    fe71224 HEAD@{0}: checkout: moving from master to pink-page
+    fe71224 HEAD@{1}: rebase finished: returning to refs/heads/master
+    fe71224 HEAD@{2}: rebase: checkout origin/master
+
+    ping@ubuntu1404:~/marys-repo$ vim pink.html
+    ping@ubuntu1404:~/marys-repo$ git cm -am "change pink to a manly color"
+    [pink-page 07b05e4] change pink to a manly color
+     1 file changed, 1 insertion(+), 2 deletions(-)
+
+    ping@ubuntu1404:~/marys-repo$ git ref -2
+    07b05e4 HEAD@{0}: commit: change pink to a manly color      #<------
+    fe71224 HEAD@{1}: checkout: moving from master to pink-page
+
+    ping@ubuntu1404:~/marys-repo$ git lg -2
+    * 07b05e4 - (HEAD -> pink-page) change pink to a manly color (10 minutes ago)<Mary>         #<------
+    * fe71224 - (origin/master, master) add pink page (26 hours ago)<john>
+
+to look at what has been done since branching off from master:
+
+    ping@ubuntu1404:~/marys-repo$ git lg master..HEAD
+    * 07b05e4 - (HEAD -> pink-page) change pink to a manly color (37 seconds ago)<Mary>
+
+    ping@ubuntu1404:~/marys-repo$ git lg master..pink-page
+    * 07b05e4 - (HEAD -> pink-page) change pink to a manly color (43 seconds ago)<Mary>
+
+    ping@ubuntu1404:~/marys-repo$ git st
+    On branch pink-page
+    nothing to commit, working tree clean
+
+=== DE2 generate a patch for the new work:
+
+    ping@ubuntu1404:~/marys-repo$ git format-patch master
+    0001-change-pink-to-a-manly-color.patch
+
+----
+ping@ubuntu1404:~/marys-repo$ ls -lct | head
+total 112
+-rw-rw-r-- 1 ping ping  662 Jan 23 01:13 0001-change-pink-to-a-manly-color.patch <1>
+-rw-rw-r-- 1 ping ping  328 Jan 23 01:12 pink.html
+-rw-rw-r-- 1 ping ping 1242 Jan 22 00:05 index.html
+-rw-rw-r-- 1 ping ping  325 Jan 21 15:45 style.css
+-rw-rw-r-- 1 ping ping  619 Jan 21 15:45 news-3.html
+drwxrwxr-x 2 ping ping 4096 Jan 21 00:22 about
+-rw-rw-r-- 1 ping ping  356 Jan 21 00:00 yellow.html
+-rw-rw-r-- 1 ping ping  347 Jan 21 00:00 red.html
+-rw-rw-r-- 1 ping ping  592 Jan 21 00:00 rainbow.html
+----
+
+<1> generated patch file for the additional work (work1) done since branching
+off from master
+
+remove it for now.
+
+    ping@ubuntu1404:~/marys-repo$ rm 0001-change-pink-to-a-manly-color.patch
+
+continue to add new work2:
+
+    ping@ubuntu1404:~/marys-repo$ vim pink.html
+    ping@ubuntu1404:~/marys-repo$ vim pink.html
+    ping@ubuntu1404:~/marys-repo$ git cm -am "add a pink block of color"
+    [pink-page 5d87d5b] add a pink block of color
+     1 file changed, 7 insertions(+)
+
+    ping@ubuntu1404:~/marys-repo$ git lg master..pink-page
+    * 5d87d5b - (HEAD -> pink-page) add a pink block of color (30 seconds ago)<Mary>    #<------work2
+    * 07b05e4 - change pink to a manly color (11 minutes ago)<Mary>     #<------work1
+
+now generate patch(es) for the 2 new commits:
+
+    ping@ubuntu1404:~/marys-repo$ git format-patch master
+    0001-change-pink-to-a-manly-color.patch     #<------commit1
+    0002-add-a-pink-block-of-color.patch        #<------commit2
+
+=== patch files
+
+.patch for commit1
+
+----
+ping@ubuntu1404:~/marys-repo$ cat 0001-change-pink-to-a-manly-color.patch
+From 07b05e4198b55fc9b77114ff3149590fa6b616cd Mon Sep 17 00:00:00 2001
+From: Mary <mary.example@rypress.com>
+Date: Mon, 23 Jan 2017 01:12:50 -0500
+Subject: [PATCH 1/2] change pink to a manly color
+
+---
+ pink.html | 3 +--      <1>
+ 1 file changed, 1 insertion(+), 2 deletions(-) <2>
+
+diff --git a/pink.html b/pink.html
+index a10f32d..11c50da 100644   <3>
+--- a/pink.html
++++ b/pink.html
+@@ -7,8 +7,7 @@         <4>
+ </head>
+ <body>
+ <h1 style="color: #F0F">The Pink Page</h1>
+-<p>Pink is <span style="color: #F0F">girly,    <5>
+-flirty and fun</span>!</p>                     <5>
++<p>Only <span style="color: #F0F">real men</span> wear pink!</p> <6>
+ <p><a href="index.html">Return to home page</a></p>
+ </body>
+ </html>
+--
+2.11.0
+----
+
+<1> 3 changes in a file 'pink.html'?
+<2> what kind of changes
+<3> this patch is between commit a10f to 11c5
+<4> num of changed lines
+<5> removed (-) lines
+<6> added (+) lines
+
+.patch for commit2
+
+----
+ping@ubuntu1404:~/marys-repo$ cat 0002-add-a-pink-block-of-color.patch
+From 5d87d5b0de7ce3f0cdf0c799ad8b6904b4f5a093 Mon Sep 17 00:00:00 2001
+From: Mary <mary.example@rypress.com>
+Date: Mon, 23 Jan 2017 01:23:19 -0500
+Subject: [PATCH 2/2] add a pink block of color
+
+---
+ pink.html | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/pink.html b/pink.html
+index 11c50da..8824548 100644
+--- a/pink.html
++++ b/pink.html
+@@ -4,10 +4,17 @@
+ <title>The Pink Page</title>
+ <link rel="stylesheet" href="style.css" />
+ <meta charset="utf-8" />
++<style>
++div {
++    width: 300px;
++    height: 50px;
++}
++</style>
+ </head>
+ <body>
+ <h1 style="color: #F0F">The Pink Page</h1>
+ <p>Only <span style="color: #F0F">real men</span> wear pink!</p>
++<div style="background-color: #F0F"></div>
+ <p><a href="index.html">Return to home page</a></p>
+ </body>
+ </html>
+--
+2.11.0
+----
+
+=== DE2 send patch files to maintainer DE1
+
+    ping@ubuntu1404:~/marys-repo$ ls -lct | head
+    total 120
+    -rw-rw-r-- 1 ping ping  792 Jan 23 01:24 0002-add-a-pink-block-of-color.patch
+    -rw-rw-r-- 1 ping ping  666 Jan 23 01:24 0001-change-pink-to-a-manly-color.patch
+    -rw-rw-r-- 1 ping ping  432 Jan 23 01:22 pink.html
+    -rw-rw-r-- 1 ping ping 1242 Jan 22 00:05 index.html
+    -rw-rw-r-- 1 ping ping  325 Jan 21 15:45 style.css
+    -rw-rw-r-- 1 ping ping  619 Jan 21 15:45 news-3.html
+    drwxrwxr-x 2 ping ping 4096 Jan 21 00:22 about
+    -rw-rw-r-- 1 ping ping  356 Jan 21 00:00 yellow.html
+    -rw-rw-r-- 1 ping ping  347 Jan 21 00:00 red.html
+
+
+    ping@ubuntu1404:~/marys-repo$ cp 000* ../my-git-repo
+    ping@ubuntu1404:~/marys-repo$ cd ../my-git-repo
+    ping@ubuntu1404:~/my-git-repo$ ls -lct |head
+    total 120
+    -rw-rw-r-- 1 ping ping  792 Jan 23 01:29 0002-add-a-pink-block-of-color.patch
+    -rw-rw-r-- 1 ping ping  666 Jan 23 01:29 0001-change-pink-to-a-manly-color.patch
+    -rw-rw-r-- 1 ping ping  334 Jan 21 23:51 pink.html
+    -rw-rw-r-- 1 ping ping 1242 Jan 21 23:51 index.html
+    -rw-rw-r-- 1 ping ping  325 Jan 21 17:32 style.css
+    -rw-rw-r-- 1 ping ping  619 Jan 21 14:44 news-3.html
+    drwxrwxr-x 2 ping ping 4096 Jan 21 00:37 about
+    -rw-rw-r-- 1 ping ping  592 Jan 20 23:59 rainbow.html
+    -rw-rw-r-- 1 ping ping  356 Jan 20 23:59 yellow.html
+
+=== maintainer/DE1 apply the patch
+
+.DE1 create a new branch to apply the patch
+
+    ping@ubuntu1404:~/my-git-repo$ git br -a
+    * master
+      remotes/john/pink-page
+      remotes/origin/master
+
+    ping@ubuntu1404:~/my-git-repo$ git co -b patch-integration
+    Switched to a new branch 'patch-integration'
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * fe71224 - (HEAD -> patch-integration, origin/master, john/pink-page, master) add pink page (26 hours ago)<john>
+    * fdcc000 - Add css styles for headings (after rebase) (34 hours ago)<Mary>
+    * 0545711 - add 3rd news item (35 hours ago)<ping>
+
+    ping@ubuntu1404:~/my-git-repo$ git ref -3
+    fe71224 HEAD@{0}: checkout: moving from master to patch-integration
+    fe71224 HEAD@{1}: merge john/pink-page: Fast-forward
+    fdcc000 HEAD@{2}: checkout: moving from fe712242c8d3b3c98951641569d8e8c4e0dc610c to master
+
+apply patch1
+
+    ping@ubuntu1404:~/my-git-repo$ git am < 0001-change-pink-to-a-manly-color.patch
+    Applying: change pink to a manly color
+
+check what is the work in the applied patch: from original master branch, till
+now - current HEAD in new branch: patch-integration
+
+    ping@ubuntu1404:~/my-git-repo$ git lg master..HEAD --stat
+    * 64ef382 - (HEAD -> patch-integration) change pink to a manly color (21 seconds ago)<Mary>
+       pink.html | 3 +--
+       1 file changed, 1 insertion(+), 2 deletions(-)
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * 64ef382 - (HEAD -> patch-integration) change pink to a manly color (60 seconds ago)<Mary>         #<------
+    * fe71224 - (origin/master, john/pink-page, master) add pink page (26 hours ago)<john>
+    * fdcc000 - Add css styles for headings (after rebase) (34 hours ago)<Mary>
+
+    ping@ubuntu1404:~/my-git-repo$ git ref -3
+    64ef382 HEAD@{0}: am: change pink to a manly color  #<------
+    fe71224 HEAD@{1}: checkout: moving from master to patch-integration
+    fe71224 HEAD@{2}: merge john/pink-page: Fast-forward
+
+the patch applying ('am') works like a 'commit', in that working dir is still
+clean (except the patch files themselves) after applying the patches
+
+    ping@ubuntu1404:~/my-git-repo$ git st
+    On branch patch-integration
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            0001-change-pink-to-a-manly-color.patch
+            0002-add-a-pink-block-of-color.patch
+
+    nothing added to commit but untracked files present (use "git add" to track)
+
+apply patch2:
+
+    ping@ubuntu1404:~/my-git-repo$ git am < 0002-add-a-pink-block-of-color.patch
+    Applying: add a pink block of color
+
+the work done in patch2:
+
+----
+ping@ubuntu1404:~/my-git-repo$ git lg master..HEAD --stat
+* 1d2a2ea - (HEAD -> patch-integration) add a pink block of color (9 seconds ago)<Mary>|
+|  pink.html | 7 +++++++
+|  1 file changed, 7 insertions(+)
+
+* 64ef382 - change pink to a manly color (2 minutes ago)<Mary>
+   pink.html | 3 +--
+   1 file changed, 1 insertion(+), 2 deletions(-)
+----
+
+it shows which 2 commits had been applied by the patch, and the details.
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * 1d2a2ea - (HEAD -> patch-integration) add a pink block of color (2 minutes ago)<Mary>     #<------
+    * 64ef382 - change pink to a manly color (4 minutes ago)<Mary>
+    * fe71224 - (origin/master, john/pink-page, master) add pink page (26 hours ago)<john>
+
+    ping@ubuntu1404:~/my-git-repo$ git ref -3
+    1d2a2ea HEAD@{0}: am: add a pink block of color     #<------
+    64ef382 HEAD@{1}: am: change pink to a manly color
+    fe71224 HEAD@{2}: checkout: moving from master to patch-integration
+
+.merge the patch branch to master
+
+    ping@ubuntu1404:~/my-git-repo$ git co master
+    Switched to branch 'master'
+    ping@ubuntu1404:~/my-git-repo$ git br -a
+    * master
+      patch-integration
+      remotes/john/pink-page
+      remotes/origin/master
+
+    ping@ubuntu1404:~/my-git-repo$ git merge patch-integration
+    Updating fe71224..1d2a2ea
+    Fast-forward
+     pink.html | 10 ++++++++--
+     1 file changed, 8 insertions(+), 2 deletions(-)
+
+now master equals to patch branch, so delete the patch branch and removing
+patch files via 'git clean'
+
+    ping@ubuntu1404:~/my-git-repo$ git lg master..patch-integration
+
+    ping@ubuntu1404:~/my-git-repo$ git br -d patch-integration
+    Deleted branch patch-integration (was 1d2a2ea).
+
+    ping@ubuntu1404:~/my-git-repo$ git clean -f
+    Removing 0001-change-pink-to-a-manly-color.patch
+    Removing 0002-add-a-pink-block-of-color.patch
+
+remote (central) repo is still not update, so push the change ("up") into it.
+
+    ping@ubuntu1404:~/my-git-repo$ git lg master..origin/master
+    ping@ubuntu1404:~/my-git-repo$ git lg origin/master..master
+    * 1d2a2ea - (HEAD -> master) add a pink block of color (5 minutes ago)<Mary>
+    * 64ef382 - change pink to a manly color (7 minutes ago)<Mary>
+
+    ping@ubuntu1404:~/my-git-repo$ git push origin master
+    Username for 'https://github.com': pinggit
+    Password for 'https://pinggit@github.com':
+    Counting objects: 6, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (6/6), done.
+    Writing objects: 100% (6/6), 721 bytes | 0 bytes/s, done.
+    Total 6 (delta 4), reused 0 (delta 0)
+    remote: Resolving deltas: 100% (4/4), completed with 2 local objects.
+    To https://github.com/pinggit/central-repo.git
+       fe71224..1d2a2ea  master -> master
+
+=== DE2 update master: by pull changes from central repo 
+
+(instead of from local branch)
+
+    ping@ubuntu1404:~/my-git-repo$ cd ../marys-repo
+    ping@ubuntu1404:~/marys-repo$ git status
+    On branch pink-page
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            0001-change-pink-to-a-manly-color.patch
+            0002-add-a-pink-block-of-color.patch
+
+    nothing added to commit but untracked files present (use "git add" to track)
+
+    ping@ubuntu1404:~/marys-repo$ git br -a
+      bio-page
+      master
+    * pink-page
+      remotes/origin/master
+
+    ping@ubuntu1404:~/marys-repo$ git co master
+    Switched to branch 'master'
+
+    ping@ubuntu1404:~/marys-repo$ git remote -v
+    origin  https://github.com/pinggit/central-repo.git (fetch)
+    origin  https://github.com/pinggit/central-repo.git (push)
+
+changes in local pink-page branch not made into local master nor 'remote
+master' of DE1's central repo - the updates by DE1 is not "fetched" in yet.
+
+    ping@ubuntu1404:~/marys-repo$ git lg master..origin/master
+    ping@ubuntu1404:~/marys-repo$ git lg origin/master..master
+    ping@ubuntu1404:~/marys-repo$ git lg pink-page..master
+    ping@ubuntu1404:~/marys-repo$ git lg master..pink-page
+    * 5d87d5b - (pink-page) add a pink block of color (27 minutes ago)<Mary>
+    * 07b05e4 - change pink to a manly color (37 minutes ago)<Mary>
+
+at this time, the "best practice" of updating local master, is not to pull
+directly from the topic branch, but instead, (wait?) and pull the updated (and
+potentially also merged?) remote master from the central repo: 
+
+* to absort all updates that maintainer merged from everyone
+* ?
+
+fetch in the updates from the remote master made by DE1 in the central repo
+
+    ping@ubuntu1404:~/marys-repo$ git fetch origin
+    remote: Counting objects: 6, done.
+    remote: Compressing objects: 100% (2/2), done.
+    remote: Total 6 (delta 4), reused 6 (delta 4), pack-reused 0
+    Unpacking objects: 100% (6/6), done.
+    From https://github.com/pinggit/central-repo
+       fe71224..1d2a2ea  master     -> origin/master
+
+now (if DE1 decided and pushed the update), it looks DE1 pushed the update into
+remote master, the update now can be seen:
+
+    ping@ubuntu1404:~/marys-repo$ git lg master..origin/master
+    * 1d2a2ea - (origin/master) add a pink block of color (9 minutes ago)<Mary>
+    * 64ef382 - change pink to a manly color (12 minutes ago)<Mary>
+
+now merge/rebase the update from remote master, into local master
+
+    ping@ubuntu1404:~/marys-repo$ git rebase origin/master
+    First, rewinding head to replay your work on top of it...
+    Fast-forwarded master to origin/master.
+
+    ping@ubuntu1404:~/marys-repo$ git lg master..origin/master
+
+then (force) delete the unmerged topic branch
+
+    ping@ubuntu1404:~/marys-repo$ git branch -D pink-page
+    Deleted branch pink-page (was 5d87d5b).
+
+and remove patches via cleanning working dir
+
+    ping@ubuntu1404:~/marys-repo$ git clean -f
+    Removing 0001-change-pink-to-a-manly-color.patch
+    Removing 0002-add-a-pink-block-of-color.patch
+
+    ping@ubuntu1404:~/marys-repo$ git lg -3
+    * 1d2a2ea - (HEAD -> master, origin/master) add a pink block of color (10 minutes ago)<Mary>        #<------
+    * 64ef382 - change pink to a manly color (12 minutes ago)<Mary>
+    * fe71224 - add pink page (26 hours ago)<john>
+
+    ping@ubuntu1404:~/marys-repo$ git ref -3
+    1d2a2ea HEAD@{0}: rebase finished: returning to refs/heads/master   #<------
+    1d2a2ea HEAD@{1}: rebase: checkout origin/master    #<------
+    fe71224 HEAD@{2}: checkout: moving from pink-page to master
+
+DE2's whole workflow can be observed here:
+
+----
+ping@ubuntu1404:~/marys-repo$ git ref -6
+1d2a2ea HEAD@{0}: rebase finished: returning to refs/heads/master <6>
+1d2a2ea HEAD@{1}: rebase: checkout origin/master <6>
+fe71224 HEAD@{2}: checkout: moving from pink-page to master <5>
+                                                        <4>
+5d87d5b HEAD@{3}: commit: add a pink block of color <3>
+07b05e4 HEAD@{4}: commit: change pink to a manly color <2>
+fe71224 HEAD@{5}: checkout: moving from master to pink-page <1>
+----
+
+<1> branch off from master with a topic branch
+<2> <3> work on the topic branch
+<4> generate patch, send to DE1, wait his merge and push
+<5> merge/rebase the update from the remote master of DE1's central repo into
+local master
+
+== tag
+
+create a tag to a (latest commit of) current branch
+
+    ping@ubuntu1404:~/learngit$ git branch
+      dev
+      issue-101
+    * master
+
+    ping@ubuntu1404:~/learngit$ git tag v1.0
+
+    ping@ubuntu1404:~/learngit$ git tag
+    v1.0
+
+create a tag to any commit
+
+    ping@ubuntu1404:~/learngit$ git log --abbrev-commit --pretty=oneline
+    30da943 merged bug fix 101
+    e506c8a fix bug 101
+    4e90dfc merge with no-ff
+    8eb7f3f add merge
+    89fb295 conflict fixed
+    dae9a4b AND simple
+    71a9574 & simple
+    06025b4 AND simple
+    c63c858 branch test
+    0cb81a3 remove test.txt
+    1f9259c add test.txt
+    3320c2b extra comit than book
+    9321a6d git tracks 2nd changes
+    b85642d git tracks changes
+    e516429 understand how stage works
+    018259a append GPL
+    f045d1e add distributed
+    d452688 wrote a readme file
+
+    ping@ubuntu1404:~/learngit$ git tag v0.9 8eb7
+    ping@ubuntu1404:~/learngit$ git tag
+    v0.9
+    v1.0
+
+show tag detail info:
+
+    ping@ubuntu1404:~/learngit$ git show v0.9
+    commit 8eb7f3f4faa4c998057b024e969e53e229948ee0
+    Author: ping <songpingemail@gmail.com>
+    Date:   Wed Jan 18 00:37:45 2017 -0500
+
+        add merge
+
+    diff --git a/readme.txt b/readme.txt
+    index 241c79a..4ac672f 100755
+    --- a/readme.txt
+    +++ b/readme.txt
+    @@ -3,3 +3,4 @@ Git is free software distributed under the GPL.
+     Git has a mutable index called stage.
+     Git tracks changes of files.
+     Creating a new branch is quick and simple.
+    +whatever change
+
+    ping@ubuntu1404:~/learngit$ git show v1.0
+    commit 30da943515df70ba51d7435921439fb4246ec21a
+    Merge: 4e90dfc e506c8a
+    Author: ping <songpingemail@gmail.com>
+    Date:   Wed Jan 18 01:10:25 2017 -0500
+
+        merged bug fix 101
+
+create a brief note along with the tag
+
+    ping@ubuntu1404:~/learngit$ git tag -a v0.1 -m "version 0.1 released" d452
+
+    ping@ubuntu1404:~/learngit$ git tag
+    v0.1        #<------
+    v0.9
+    v1.0
+
+    ping@ubuntu1404:~/learngit$ git show v0.1
+    tag v0.1
+    Tagger: ping <songpingemail@gmail.com>
+    Date:   Wed Jan 18 22:06:44 2017 -0500
+
+    version 0.1 released        #<------ the brief statement
+
+    commit d452688ee8d88edefebc20a13629092fcc07d676
+    Author: ping <songpingemail@gmail.com>
+    Date:   Mon Jan 16 23:05:06 2017 -0500
+
+        wrote a readme file
+
+    diff --git a/readme.txt b/readme.txt
+    new file mode 100644
+    index 0000000..46d49bf
+    --- /dev/null
+    +++ b/readme.txt
+    @@ -0,0 +1,2 @@
+    +Git is a version control system.
+
+.create a "signed" tag
+
+create a pgp key:
+
+    ping@ubuntu1404:~/learngit$ gpg --gen-key
+    gpg (GnuPG) 1.4.16; Copyright (C) 2013 Free Software Foundation, Inc.
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.
+
+    Please select what kind of key you want:
+       (1) RSA and RSA (default)
+       (2) DSA and Elgamal
+       (3) DSA (sign only)
+       (4) RSA (sign only)
+    Your selection? 1
+    RSA keys may be between 1024 and 4096 bits long.
+    What keysize do you want? (2048)
+    Requested keysize is 2048 bits
+    Please specify how long the key should be valid.
+             0 = key does not expire
+          <n>  = key expires in n days
+          <n>w = key expires in n weeks
+          <n>m = key expires in n months
+          <n>y = key expires in n years
+    Key is valid for? (0)
+    Key does not expire at all
+    Is this correct? (y/N) y
+
+    You need a user ID to identify your key; the software constructs the user ID
+    from the Real Name, Comment and Email Address in this form:
+        "Heinrich Heine (Der Dichter) <heinrichh@duesseldorf.de>"
+
+    Real name: ping song
+    Email address: songpingemail@gmail.com
+    Comment:
+    You selected this USER-ID:
+        "ping song <songpingemail@gmail.com>"
+
+    Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? o
+    You need a Passphrase to protect your secret key.
+
+    gpg: gpg-agent is not available in this session
+    You don't want a passphrase - this is probably a *bad* idea!
+    I will do it anyway.  You can change your passphrase at any time,
+    using this program with the option "--edit-key".
+
+    We need to generate a lot of random bytes. It is a good idea to perform
+    some other action (type on the keyboard, move the mouse, utilize the
+    disks) during the prime generation; this gives the random number
+    generator a better chance to gain enough entropy.
+
+    Not enough random bytes available.  Please do some other work to give
+    the OS a chance to collect more entropy! (Need 271 more bytes)
+    ...........+++++
+    +++++
+    We need to generate a lot of random bytes. It is a good idea to perform
+    some other action (type on the keyboard, move the mouse, utilize the
+    disks) during the prime generation; this gives the random number
+    generator a better chance to gain enough entropy.
+
+    Not enough random bytes available.  Please do some other work to give
+    the OS a chance to collect more entropy! (Need 84 more bytes)
+    .........+++++
+
+    Not enough random bytes available.  Please do some other work to give
+    the OS a chance to collect more entropy! (Need 128 more bytes)
+    ....+++++
+    gpg: key A7323182 marked as ultimately trusted
+    public and secret key created and signed.
+
+    gpg: checking the trustdb
+    gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+    gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+    pub   2048R/A7323182 2017-01-19
+          Key fingerprint = 7662 186D 19EA 20A4 6E5A  2D22 C3B4 9DD5 A732 3182
+    uid                  ping song <songpingemail@gmail.com>
+    sub   2048R/6FD532E3 2017-01-19
+
+    ping@ubuntu1404:~/learngit$ gpg --list-keys
+    /home/ping/.gnupg/pubring.gpg
+    -----------------------------
+    pub   2048R/A7323182 2017-01-19     #<------ key created
+    uid                  ping song <songpingemail@gmail.com>
+    sub   2048R/6FD532E3 2017-01-19
+
+Once you have a private key to sign with, you can configure Git to use it for
+signing things by setting the 'user.signing' key config setting.
+
+    git config --global user.signingkey 0A46826A
+
+Now Git will use your key by default to sign tags and commits if you want
+
+    ping@ubuntu1404:~/learngit$ git tag -s v0.2 -m "signed version 0.2 released" f045
+
+    ping@ubuntu1404:~/learngit$ git show v0.2
+    tag v0.2
+    Tagger: ping <songpingemail@gmail.com>
+    Date:   Wed Jan 18 23:29:38 2017 -0500
+
+    signed version 0.2 released
+    -----BEGIN PGP SIGNATURE-----
+    Version: GnuPG v1
+
+    iQEcBAABAgAGBQJYgECyAAoJEMO0ndWnMjGCKFUH/0mEogXD3/WLojwSYbewWeE5
+    tJxFdhFPx3GhpMsxitezflgmSkzBuqNprsIxCCHhTU8BJ9hnSLqxrXyOaph2EO+o
+    vDsIumW0tSrVudO/XMtNcT1Raai/RmQJTmiCk79yGe1CYx0E3YF+EVdDWGJUDMx3
+    dSiac/0P6FMxbhvsw+69muhQbomWXQFYv4m9O95/SlHuOXxN+ZcWl/gxaoxnSkVg
+    AntBdCi8PGShe9JprwpSHuI17gJbtpCNcD/Xhw5MzDdLStD9FNEESjwr3Z1kpgev
+    wPMtIep/tfrQKIID6lADj6Elau9sc9DtyoVqI9OfEJS8mzzFipMQQ70fKR0qvxk=
+    =jfJC
+    -----END PGP SIGNATURE-----
+
+    commit f045d1e47da95d7d3b01c6156b5769c7e7e78816
+    Author: ping <songpingemail@gmail.com>
+    Date:   Mon Jan 16 23:08:53 2017 -0500
+
+        add distributed
+
+    diff --git a/readme.txt b/readme.txt
+    index 46d49bf..9247db6 100644
+    --- a/readme.txt
+    +++ b/readme.txt
+    @@ -1,2 +1,2 @@
+    -Git is a version control system.
+    +Git is a distributed version control system.
+     Git is free software.
+
+delete a tag
+
+    ping@ubuntu1404:~/learngit$ git tag -d v0.1
+    Deleted tag 'v0.1' (was be41db3)
+
+push a tag to remote repo:
+
+    ping@ubuntu1404:~/learngit$ git push origin v1.0
+    Username for 'https://github.com': pinggit
+    Password for 'https://pinggit@github.com':
+    Total 0 (delta 0), reused 0 (delta 0)
+    To https://github.com/pinggit/learngit.git
+     * [new tag]         v1.0 -> v1.0
+
+push all tags to remote repo:
+
+    ping@ubuntu1404:~/learngit$ git push origin --tags
+    Counting objects: 1, done.
+    Writing objects: 100% (1/1), 535 bytes | 0 bytes/s, done.
+    Total 1 (delta 0), reused 0 (delta 0)
+    To https://github.com/pinggit/learngit.git
+     * [new tag]         v0.2 -> v0.2
+     * [new tag]         v0.9 -> v0.9
+
+remove a remote tag:
+
+    ping@ubuntu1404:~/learngit$ git tag -d v0.9
+    Deleted tag 'v0.9' (was 8eb7f3f)
+
+    ping@ubuntu1404:~/learngit$ git push origin :refs/tags/v0.9
+    To https://github.com/pinggit/learngit.git
+     - [deleted]         v0.9
+
+== rebase
+
+* git-rebase - Reapply commits on top of another base tip
+* eliminate need for merge
+* customize/modify commit history and generate a more linear looking history
+
+=== rebase for merging branch
+
+before branch of 'about':
+
+    ping@ubuntu1404:~/my-git-repo$ git lg
+    *   359100f - (HEAD -> master) Merge branch 'crazy' (11 minutes ago)<ping>
+    |\
+    | * 223b2bb - Add new item for rainbow (32 minutes ago)<ping>
+
+
+branch off 'about' from master:
+
+    ping@ubuntu1404:~/my-git-repo/about$ git br
+    * master
+
+    ping@ubuntu1404:~/my-git-repo/about$ git co -b about
+
+some change in 'about':
+
+    ping@ubuntu1404:~/my-git-repo/about$ git cm -am "add contents to about page"
+    [about aae3ff1] add contents to about page
+     1 file changed, 17 insertions(+)
+     create mode 100644 about/index.html
+
+    ping@ubuntu1404:~/my-git-repo/about$ git st
+    On branch about
+    nothing to commit, working tree clean
+
+go back to master for some urgent work:
+
+    ping@ubuntu1404:~/my-git-repo$ git co master
+    Switched to branch 'master'
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    *   359100f - (HEAD -> master) Merge branch 'crazy' (23 minutes ago)<ping>
+    |\
+    | * 223b2bb - Add new item for rainbow (44 minutes ago)<ping>
+    ......
+
+branch off 'news-hotfix' for some urgent fix:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git co -b news-hotfix
+    Switched to a new branch 'news-hotfix'
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ vim index.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git cm -am "add 2nd news item to index page"
+    [news-hotfix 2d9f505] add 2nd news item to index page
+     1 file changed, 1 insertion(+)
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ vim news-2.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git add news-2.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ ls
+    blue.html  index.html  news-1.html  news-2.html  orange.html  rainbow.html  style.css
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git cm -m "Add article for 2nd news item"
+    [news-hotfix 4f5e749] Add article for 2nd news item
+     1 file changed, 16 insertions(+)
+     create mode 100644 news-2.html
+
+merge the fix into master and delete the temp branch:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git co master
+    Switched to branch 'master'
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git merge news-hotfix
+    Updating 359100f..4f5e749
+    Fast-forward
+     index.html  |  1 +
+     news-2.html | 16 ++++++++++++++++
+     2 files changed, 17 insertions(+)
+     create mode 100644 news-2.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git br -d news-hotfix
+    Deleted branch news-hotfix (was 4f5e749).
+
+lastest master:
+
+----
+ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+* 4f5e749 - (HEAD -> master) Add article for 2nd news item (33 seconds ago)<ping> <1>
+* 2d9f505 - add 2nd news item to index page (2 minutes ago)<ping> <2>
+*   359100f - Merge branch 'crazy' (13 hours ago)<ping>
+|\
+| * 223b2bb - Add new item for rainbow (13 hours ago)<ping>
+| * 078238e - link index.html to rainbow.html (19 hours ago)<ping>
+| * 1e6598d - add css stylesheet to rainbow.html (19 hours ago)<ping>
+| *   7bdf73f - Merge branch 'master' into crazy (19 hours ago)<ping>
+| |\
+| * | 7630fb1 - rename crazy.html to rainbow.html (20 hours ago)<ping>
+| * | b337c0e - add a rainbow to crazy.html (20 hours ago)<ping>
+* | | 48066e1 - changed index.html (13 hours ago)<ping>
+* | | ce3ee68 - ADd 1t news item (14 hours ago)<ping>
+| |/
+|/|
+* | 6932529 - Revert "delete css" (20 hours ago)<ping>
+* | 84042e4 - Revert "link html pages to stylesheet" (20 hours ago)<ping>
+* | a3c8ea6 - delete css (20 hours ago)<ping>
+* | 12ecdfe - link html pages to stylesheet (20 hours ago)<ping>
+* | 0d57262 - Add CSS stylesheet (20 hours ago)<ping>
+* | 44f3a80 - Revert "Add navigation links" (20 hours ago)<ping>
+|/
+* bfae2e8 - Revert "Add a crazzzy experiment" (4 years, 1 month ago)<Ryan>
+* e2e188a - Add a crazzzy experiment (4 years, 1 month ago)<Ryan>
+* ebf439f - (tag: v1.0) Add navigation links (4 years, 1 month ago)<Ryan>
+* 578959e - Create blue and orange pages (4 years, 1 month ago)<Ryan>
+* 67af295 - Create index page (4 years, 1 month ago)<Ryan>
+----
+
+<1>, <2>: fix merged from news-hotfix temp branch to master
+
+and this is a ff merge:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git reflog
+    4f5e749 HEAD@{0}: merge news-hotfix: Fast-forward
+    359100f HEAD@{1}: checkout: moving from news-hotfix to master
+    4f5e749 HEAD@{2}: commit: Add article for 2nd news item
+    2d9f505 HEAD@{3}: commit: add 2nd news item to index page
+    359100f HEAD@{4}: checkout: moving from master to news-hotfix
+    359100f HEAD@{5}: checkout: moving from about to master
+    ......
+
+now the bug fix in master is done, come back to about branch, now we want to
+use 'rebase', instead of 3-way merge, to merge branch about's work into master:
+
+latest 'about':
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    * aae3ff1 - (HEAD -> about) add contents to about page (34 seconds ago)<ping>
+    *   359100f - (master) Merge branch 'crazy' (23 minutes ago)<ping>
+
+we now need a rebase:
+
+    git rebase master
+
+this reads: to rebase 'about' branch **on top of tip of** 'master' branch:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git co about
+    Switched to branch 'about'
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git rebase master
+    First, rewinding head to replay your work on top of it...
+    Applying: add contents to about page
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git reflog
+    1c10864 HEAD@{0}: rebase finished: returning to refs/heads/about    #<------
+    1c10864 HEAD@{1}: rebase: add contents to about page        #<------
+    4f5e749 HEAD@{2}: rebase: checkout master   #<------
+    aae3ff1 HEAD@{3}: checkout: moving from master to about
+    4f5e749 HEAD@{4}: merge news-hotfix: Fast-forward
+    359100f HEAD@{5}: checkout: moving from news-hotfix to master
+    4f5e749 HEAD@{6}: commit: Add article for 2nd news item
+    2d9f505 HEAD@{7}: commit: add 2nd news item to index page
+    359100f HEAD@{8}: checkout: moving from master to news-hotfix
+    ......
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    * 1c10864 - (HEAD -> about) add contents to about page (2 minutes ago)<ping>
+    * 4f5e749 - (master) Add article for 2nd news item (11 minutes ago)<ping>
+    * 2d9f505 - add 2nd news item to index page (12 minutes ago)<ping>
+    *   359100f - Merge branch 'crazy' (21 hours ago)<ping>
+    ......
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git br
+    * about
+      master
+
+what this rebase did:
+
+Originally, the about branch was based on the Merge branch 'crazy-experiment'
+commit. The rebase took the entire about branch and plopped it onto the tip of
+the master branch. After the rebase, about is a linear extension of the master
+branch, enabling us to do a fast-forward merge later on. Rebasing also allowed
+us to integrate the most up-to-date version of master without a merge commit.
+
+image::https://cloud.githubusercontent.com/assets/2038044/22161053/9ccdf634-df16-11e6-80e6-58e4105cf586.png[]
+
+in our case:
+
+before rebase:
+
+           ----- aae3 (about)
+          /
+         /
+    3591  ------ 2d9f ---- 4f5e (master)
+
+after rebase:
+
+        ...............
+        .  ----- aae3 .
+        . /           . ...........
+        ./            .            .
+        ...............             .
+                                     v
+    3591  ------ 2d9f ---- 4f5e ---- 1c10 
+                         (master)   (about)
+
+=== rebase for merging commit
+
+==== 'squash'
+
+after rebasing "about" on top of "master", continue the work on "about" 
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git br
+    * about
+      master
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ ls
+    about  blue.html  index.html  news-1.html  
+    news-2.html  orange.html  rainbow.html  style.css
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ cd about/
+
+add one commit:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo/about$ vim me.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo/about$ git add me.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo/about$ git cm -am "add html page me.html"
+    [about 1476df4] add html page me.html
+     1 file changed, 19 insertions(+)
+     create mode 100644 about/me.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo/about$ git lg
+    * 1476df4 - (HEAD -> about) add html page me.html (5 seconds ago)<ping>     #<------
+    * 1c10864 - add contents to about page (52 minutes ago)<ping>
+
+add two more commits:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo/about$ touch mary.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo/about$ git add mary.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo/about$ git cm -am "add empty page mary.html"
+    [about e89f652] add empty page mary.html
+     1 file changed, 0 insertions(+), 0 deletions(-)
+     create mode 100644 about/mary.html
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ vim index.html
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git cm -am "add link to about section in home page"
+    [about 3ff82ae] add link to about section in home page
+     1 file changed, 3 insertions(+)
+
+now there are totally 4 continue commits
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    * 3ff82ae - (HEAD -> about) add link to about section in home page (9 seconds ago)<ping>    #<------
+    * e89f652 - add empty page mary.html (3 minutes ago)<ping>          #<------
+    * 1476df4 - add html page me.html (5 minutes ago)<ping>             #<------
+    * 1c10864 - add contents to about page (56 minutes ago)<ping>       #<------
+
+now, start an "interactive" rebase, to rebase(merge) the commits,
+
+    git rebase -i master
+
+this reads: rebase all commits from "after" master, till head of current about
+branch - so there are 4 commits available for rebase.
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git rebase -i master
+    [detached HEAD ea50b8a] add contents to about page & add html page me.html
+     Date: Fri Jan 20 00:14:55 2017 -0500
+     2 files changed, 36 insertions(+)
+     create mode 100644 about/index.html
+     create mode 100644 about/me.html
+    [detached HEAD 1f5905c] add empty page mary.html & add link to about section in home page
+     Date: Fri Jan 20 13:48:53 2017 -0500
+     2 files changed, 3 insertions(+)
+     create mode 100644 about/mary.html
+    Successfully rebased and updated refs/heads/about.
+
+this process will start the editor to edit the rebase commands for each commit:
+
+'pick', 'squash' command ...
+
+use 'squash' command on 'e89f652' and '1c10864', leave the other 2 with the
+default 'pick' command.
+
+image::https://cloud.githubusercontent.com/assets/2038044/22170436/5834d24c-df4b-11e6-9981-3571f834aa33.png[]
+
+comparing before and after rebase:
+
+before rebase:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    * 3ff82ae - (HEAD -> about) add link to about section in home page (9 seconds ago)<ping>    #<------
+    * e89f652 - add empty page mary.html (3 minutes ago)<ping>          #<------
+    * 1476df4 - add html page me.html (5 minutes ago)<ping>             #<------
+    * 1c10864 - add contents to about page (56 minutes ago)<ping>       #<------
+    * 4f5e749 - (master) Add article for 2nd news item (65 minutes ago)<ping>
+
+after rebase, 4 commits got merged into 2 (new ones), and commit history shows:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    * 1f5905c - (HEAD -> about) add empty page mary.html & add link to about section in home page (13 seconds ago)<ping>        #<------
+    * ea50b8a - add contents to about page & add html page me.html (50 seconds ago)<ping>       #<------
+    * 4f5e749 - (master) Add article for 2nd news item (8 hours ago)<ping>
+
+==== 'edit'
+
+if repeat the same rebase command again:
+
+    git rebase -i master
+
+the editor will again be opened, but now contains only 2 commits to rebase:
+
+    pick ea50b8a add contents to about page & add html page me.html
+    pick 1f5905c add empty page mary.html & add link to about section in home page      #<------will "edit" this
+
+    # Rebase 4f5e749..1f5905c onto 4f5e749 (2 commands)
+    #
+    # Commands:
+    # p, pick = use commit
+    # r, reword = use commit, but edit the commit message
+    # e, edit = use commit, but stop for amending
+    # s, squash = use commit, but meld into previous commit
+    # f, fixup = like "squash", but discard this commit's log message
+    # x, exec = run command (the rest of the line) using shell
+    # d, drop = remove commit
+    #
+    # These lines can be re-ordered; they are executed from top to bottom.
+    #
+    # If you remove a line here THAT COMMIT WILL BE LOST.
+    #
+    # However, if you remove everything, the rebase will be aborted.
+    #
+    # Note that empty commits are commented out
+
+this time try 'edit' command, put it on '1f5905c', make above editor content
+looks:
+
+    pick ea50b8a add contents to about page & add html page me.html
+    edit 1f5905c add empty page mary.html & add link to about section in home page      #<------will "edit" this
+
+quit editor. now, that (last) commit '1f5905c' is marked to be used for next
+commit.
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git rebase -i master
+    Stopped at 1f5905c... add empty page mary.html & add link to about section in home page
+    You can amend the commit now, with
+
+            git commit --amend
+
+    Once you are satisfied with your changes, run
+
+            git rebase --continue
+
+
+now make a new change:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ echo "[Mary, please update your bio! ]" >> about/index.html
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git st
+    interactive rebase in progress; onto 4f5e749
+    Last commands done (2 commands done):
+       pick ea50b8a add contents to about page & add html page me.html
+       edit 1f5905c add empty page mary.html & add link to about section in home page
+    No commands remaining.
+    You are currently editing a commit while rebasing branch 'about' on '4f5e749'.
+      (use "git commit --amend" to amend the current commit)
+      (use "git rebase --continue" once you are satisfied with your changes)
+
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   about/index.html
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git add about/index.html
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git st
+    interactive rebase in progress; onto 4f5e749
+    Last commands done (2 commands done):
+       pick ea50b8a add contents to about page & add html page me.html
+       edit 1f5905c add empty page mary.html & add link to about section in home page
+    No commands remaining.
+    You are currently editing a commit while rebasing branch 'about' on '4f5e749'.
+      (use "git commit --amend" to amend the current commit)
+      (use "git rebase --continue" once you are satisfied with your changes)
+
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            modified:   about/index.html
+
+use 'git commit --amend' to commit:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git commit --amend
+    add empty page mary.html & add link to about section in home page
+
+    # Please enter the commit message for your changes. Lines starting
+    # with '#' will be ignored, and an empty message aborts the commit.
+    #
+    # Date:      Fri Jan 20 13:48:53 2017 -0500
+    #
+    # interactive rebase in progress; onto 4f5e749
+    # Last commands done (2 commands done):
+    #    pick ea50b8a add contents to about page & add html page me.html
+    #    edit 1f5905c add empty page mary.html & add link to about section in home page
+    # No commands remaining.
+    # You are currently splitting a commit while rebasing branch 'about' on '4f5e749'.
+    #
+    # Changes to be committed:
+    #       modified:   about/index.html
+    #       new file:   about/mary.html
+    #       modified:   index.html
+    #
+
+quit editor:
+
+                   VVVVVVV
+    [detached HEAD a53697e] add empty page mary.html & add link to about section in home page
+     Date: Fri Jan 20 13:48:53 2017 -0500
+     3 files changed, 4 insertions(+)
+     create mode 100644 about/mary.html
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git st
+    interactive rebase in progress; onto 4f5e749
+    Last commands done (2 commands done):
+       pick ea50b8a add contents to about page & add html page me.html
+       edit 1f5905c add empty page mary.html & add link to about section in home page
+    No commands remaining.
+    You are currently editing a commit while rebasing branch 'about' on '4f5e749'.
+      (use "git commit --amend" to amend the current commit)
+      (use "git rebase --continue" once you are satisfied with your changes)
+
+    nothing to commit, working tree clean
+
+use 'git commit --continue' to mark finishing this rebase and continue:
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git rebase --continue
+    Successfully rebased and updated refs/heads/about.
+    ping@ubuntu1404:~/Dropbox/my-git-repo$
+
+it looks, the old commit '1f5905c' was "edited", and new change got merged with
+it and replaced with a new commit ID 'a53697e':
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    * a53697e - (HEAD -> about) add empty page mary.html & add link to about section in home page (15 minutes ago)<ping>        #<------
+    * ea50b8a - add contents to about page & add html page me.html (7 hours ago)<ping>
+
+the result is, a new commit "merged" with and existing one into one single
+(new) commit.
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git reflog
+    a53697e HEAD@{0}: rebase -i (finish): returning to refs/heads/about
+    a53697e HEAD@{1}: commit (amend): add empty page mary.html & add link to about section in home page
+    9bebb92 HEAD@{2}: commit (amend): add empty page mary.html & add link to about section in home page
+
+
+== changing history
+
+before any changes:
+
+    ping@ubuntu1404:~/rewriting-history$ git br -a
+    * master
+
+branch off of master to commit some change:
+
+    ping@ubuntu1404:~/rewriting-history$ git co -b new-pages
+    Switched to a new branch 'new-pages'
+
+    ping@ubuntu1404:~/rewriting-history$ git br
+      master
+    * new-pages
+
+=== 1st changes:
+
+    ping@ubuntu1404:~/rewriting-history$ vim red.html
+    ping@ubuntu1404:~/rewriting-history$ vim yellow.html
+    ping@ubuntu1404:~/rewriting-history$ vim index.html
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    On branch new-pages
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   index.html
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            red.html
+            yellow.html
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+staging changes and commit
+
+    ping@ubuntu1404:~/rewriting-history$ git add red.html yellow.html index.html
+    ping@ubuntu1404:~/rewriting-history$ git cm -m "add new html pages"
+    [new-pages 0a7eff9] add new html pages
+     3 files changed, 31 insertions(+)
+     create mode 100644 red.html
+     create mode 100644 yellow.html
+
+=== 2nd change:
+
+    ping@ubuntu1404:~/rewriting-history$ vim green.html
+    ping@ubuntu1404:~/rewriting-history$ git st
+    On branch new-pages
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   index.html
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            green.html
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+    ping@ubuntu1404:~/rewriting-history$ git add green.html index.html
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    On branch new-pages
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   green.html
+            modified:   index.html
+
+    ping@ubuntu1404:~/rewriting-history$ git cm -m "add green page"
+    [new-pages 7956259] add green page
+     2 files changed, 16 insertions(+)
+     create mode 100644 green.html
+
+=== define the desired commit sequence
+
+so far the commit history looks:
+
+----
+ping@ubuntu1404:~/rewriting-history$ git lg -3
+* 7956259 - (HEAD -> new-pages) add green page (25 seconds ago)<ping>   <1>
+* 0a7eff9 - add new html pages (3 minutes ago)<ping>                    <2>
+* 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)<Ryan>
+----
+<1> commit 1
+<2> commit 2
+   
+                   new-pages/HEAD 
+                     ^
+                     |
+    5fa9    0a7e    7956
+    |
+    v
+    master
+
+this looks **BAD** commit history. want to split the first commits to reflect
+the more nature commit flow: 
+
+* change red page, desired 1st commit
+* change yellow page, desired 2nd commit
+
+=== use rebase to edit first commit
+
+so to 'rebase' all additional commits comparing to 'master':
+
+    ping@ubuntu1404:~/rewriting-history$ git rebase -i master
+
+----
+edit 0a7eff9 add new html pages <1>
+pick 7956259 add green page     <2>
+----
+<1> change to "edit" the 1st commit
+<2> "pick" (default) the 2nd commit
+
+    Stopped at 0a7eff9... add new html pages    #<------
+    You can amend the commit now, with
+
+            git commit --amend
+
+    Once you are satisfied with your changes, run
+
+            git rebase --continue
+
+now the commit history stop at where we want to "edit", so the next commit
+won't show up in commit history:
+
+    ping@ubuntu1404:~/rewriting-history$ git lg -3
+    * 0a7eff9 - (HEAD) add new html pages (8 minutes ago)<ping>         #<------
+    * 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)<Ryan>
+    * b490c20 - Begin creating bio pages (4 years, 1 month ago)<Ryan>
+
+now the commit diagram looks:
+
+           new-pages/HEAD 
+             ^
+             |
+    5fa9    0a7e    7956
+    |
+    v
+    master
+
+this goes back to after 1st commit and before 2nd commit
+
+=== reset --mixed HEAD~1
+
+this will reset the HEAD , AND staged area, even 1 more commit further - going
+back to the original commit before 1st new commit:
+
+    ping@ubuntu1404:~/rewriting-history$ git reset --mixed HEAD~1
+    Unstaged changes after reset:
+    M       index.html
+
+    ping@ubuntu1404:~/rewriting-history$ git lg -3
+    * 5fa9624 - (HEAD, master) Add link to about section in home page (4 years, 1 month ago)<Ryan>
+    * b490c20 - Begin creating bio pages (4 years, 1 month ago)<Ryan>
+    * 655c7d9 - Create the about page (4 years, 1 month ago)<Ryan>
+
+now the commit diagram looks same as before all changes:
+
+   new-pages/HEAD 
+     ^
+     |
+    5fa9    0a7e    7956
+    |
+    v
+    master
+
+this goes back to even before 1st commit executed - after 1st change made in
+working dir, but before staging and commiting. or in another word, we removed
+all new commits (moving HEAD back to where we were), but keep all file changes
+that we've worked on. comparing with '--hard' version, which will recover
+everything (commit history, staged area, AND working dir) , '--mixed' is what
+we need - we don't actually want to lose all changes.
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    interactive rebase in progress; onto 5fa9624
+    Last command done (1 command done):
+       edit 0a7eff9 add new html pages
+    Next command to do (1 remaining command):
+       pick 7956259 add green page
+      (use "git rebase --edit-todo" to view and edit)
+    You are currently splitting a commit while rebasing branch 'new-pages' on '5fa9624'.
+      (Once your working directory is clean, run "git rebase --continue")
+
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   index.html
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            red.html
+            yellow.html
+
+now we are not in any branches:
+
+    ping@ubuntu1404:~/rewriting-history$ git br
+    * (no branch, rebasing new-pages)   #<------
+      master
+      new-pages
+    ping@ubuntu1404:~/rewriting-history$
+
+=== produce the desired 1st commit
+
+now change/split the 1st change , and produce one meaningful "atom" commit:
+
+    ping@ubuntu1404:~/rewriting-history$ vim red.html
+    ping@ubuntu1404:~/rewriting-history$ vim index.html
+    ping@ubuntu1404:~/rewriting-history$ git add red.html index.html
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    interactive rebase in progress; onto 5fa9624
+    Last command done (1 command done):
+       edit 0a7eff9 add new html pages
+    Next command to do (1 remaining command):
+       pick 7956259 add green page
+      (use "git rebase --edit-todo" to view and edit)
+    You are currently editing a commit while rebasing branch 'new-pages' on '5fa9624'.
+      (use "git commit --amend" to amend the current commit)
+      (use "git rebase --continue" once you are satisfied with your changes)
+
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            modified:   index.html
+            new file:   red.html
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            yellow.html
+
+so far this looks our desired 1st commit - just commit changes regarding
+"adding a red page", now commit the change:
+
+    ping@ubuntu1404:~/rewriting-history$ git cm -m "add red page"
+    [detached HEAD ccc8349] add red page
+     2 files changed, 18 insertions(+)
+     create mode 100644 red.html
+
+----
+ping@ubuntu1404:~/rewriting-history$ git st
+interactive rebase in progress; onto 5fa9624            <1>
+Last command done (1 command done):                     <2>
+   edit 0a7eff9 add new html pages
+Next command to do (1 remaining command):               <3>
+   pick 7956259 add green page
+  (use "git rebase --edit-todo" to view and edit)
+You are currently editing a commit while rebasing branch 'new-pages' on '5fa9624'.
+  (use "git commit --amend" to amend the current commit)
+  (use "git rebase --continue" once you are satisfied with your changes)
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        yellow.html
+nothing added to commit but untracked files present (use "git add" to track)
+----
+
+<1> we are still in the middle of the "interactive rebase"
+<2> in the rebase process, we are doing the original 1st commit - editing 1st
+commit - "edit 0a7e"
+<3> next step in the rebase process, is to do the 2nd original commit - "pick
+7956"
+
+   new-pages
+     ^
+     |
+    5fa9                0a7e    7956
+    |    \
+    v     --- ccc8
+    master     |
+               v
+              HEAD
+
+=== producing the desired 2nd commit
+
+repeat the above process, now group changes regarding "adding a yellow page",
+and produce a 2nd commit:
+
+    ping@ubuntu1404:~/rewriting-history$ vim yellow.html
+    ping@ubuntu1404:~/rewriting-history$ vim index.html
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    interactive rebase in progress; onto 5fa9624
+    Last command done (1 command done):
+       edit 0a7eff9 add new html pages
+    Next command to do (1 remaining command):
+       pick 7956259 add green page
+      (use "git rebase --edit-todo" to view and edit)
+    You are currently splitting a commit while rebasing branch 'new-pages' on '5fa9624'.
+      (Once your working directory is clean, run "git rebase --continue")
+
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   index.html
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            yellow.html
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+    ping@ubuntu1404:~/rewriting-history$ git add index.html yellow.html
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    interactive rebase in progress; onto 5fa9624
+    Last command done (1 command done):
+       edit 0a7eff9 add new html pages
+    Next command to do (1 remaining command):
+       pick 7956259 add green page
+      (use "git rebase --edit-todo" to view and edit)
+    You are currently editing a commit while rebasing branch 'new-pages' on '5fa9624'.
+      (use "git commit --amend" to amend the current commit)
+      (use "git rebase --continue" once you are satisfied with your changes)
+
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            modified:   index.html
+            new file:   yellow.html
+
+execute the 2nd desired commit:
+
+    ping@ubuntu1404:~/rewriting-history$ git cm -m "add yellow page"
+    [detached HEAD c76ae68] add yellow page
+     2 files changed, 16 insertions(+)
+     create mode 100644 yellow.html
+
+now we can see the 2 new commits (both are our desired commits) are generated:
+
+    ping@ubuntu1404:~/rewriting-history$ git lg -3
+    * c76ae68 - (HEAD) add yellow page (55 seconds ago)<ping>   #<------
+    * ccc8349 - add red page (3 minutes ago)<ping>              #<------
+    * 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)<Ryan>
+
+    ping@ubuntu1404:~/rewriting-history$ git ref -3
+    c76ae68 HEAD@{0}: commit: add yellow page   #<------
+    ccc8349 HEAD@{1}: commit: add red page      #<------
+    5fa9624 HEAD@{2}: reset: moving to HEAD~1
+
+but, we are still finishing rebase - we just splitted the original 1st commit
+into 2 new desired commits, and we still need to process the original 2nd
+commit.
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    interactive rebase in progress; onto 5fa9624
+    Last command done (1 command done):
+       edit 0a7eff9 add new html pages
+    Next command to do (1 remaining command):
+       pick 7956259 add green page      #<------
+      (use "git rebase --edit-todo" to view and edit)
+    You are currently editing a commit while rebasing branch 'new-pages' on '5fa9624'.
+      (use "git commit --amend" to amend the current commit)
+      (use "git rebase --continue" once you are satisfied with your changes)
+
+    nothing to commit, working tree clean
+
+otherwise we won't be back to our original branch!
+
+    ping@ubuntu1404:~/rewriting-history$ git br
+    * (no branch, rebasing new-pages)   #<------
+      master
+      new-pages
+
+commit diagram looks:
+
+   new-pages
+     ^
+     |
+    5fa9                0a7e    7956
+    |    \
+    v     --- ccc8 ---  c76a
+    master               |
+                         v
+                        HEAD
+
+=== run 'rebase --continue' to finish rebase
+
+to finish the rebase process, there are something left to finish:
+
+* apply other commits. in this case, we just done 'edit' 1st original commit,
+still need to execute commands on other original commits - 1st original commit
+(pick 7956)
+* get back to the original branch where we were - by moving the branch to
+current HEAD
+
+    ping@ubuntu1404:~/rewriting-history$ git rebase --continue
+    Successfully rebased and updated refs/heads/new-pages.
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    On branch new-pages
+    nothing to commit, working tree clean
+
+    ping@ubuntu1404:~/rewriting-history$ git lg -3
+    * 81d74e6 - (HEAD -> new-pages) add green page (10 seconds ago)<ping>
+    * c76ae68 - add yellow page (82 seconds ago)<ping>
+    * ccc8349 - add red page (3 minutes ago)<ping>
+
+    ping@ubuntu1404:~/rewriting-history$ git ref -5
+    81d74e6 HEAD@{0}: rebase -i (finish): returning to refs/heads/new-pages
+    81d74e6 HEAD@{1}: rebase -i (pick): add green page
+    c76ae68 HEAD@{2}: commit: add yellow page
+    ccc8349 HEAD@{3}: commit: add red page
+    5fa9624 HEAD@{4}: reset: moving to HEAD~1
+
+now we are back to the original topic branch
+
+    ping@ubuntu1404:~/rewriting-history$ git br
+      master
+    * new-pages
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    On branch new-pages
+    nothing to commit, working tree clean
+
+commit diagram:
+
+                       (old1)  (old2)
+    5fa9                0a7e    7956
+    |    \
+    v     --- ccc8 ---  c76a -- 81d7
+    master  (split1)  (split2) (new2)
+                                 |
+                                 v
+                                HEAD/new-pages
+
+* old1 -> split1 + split2
+* old2 -> new2
+
+== patching
+
+
+     1 From 07b05e4198b55fc9b77114ff3149590fa6b616cd Mon Sep 17 00:00:00 2001
+     2 From: Mary <mary.example@rypress.com>
+     3 Date: Mon, 23 Jan 2017 01:12:50 -0500
+     4 Subject: [PATCH] change pink to a manly color
+     5
+     6 ---
+     7  pink.html | 3 +--
+     8  1 file changed, 1 insertion(+), 2 deletions(-)
+     9
+    10 diff --git a/pink.html b/pink.html
+    11 index a10f32d..11c50da 100644
+    12 --- a/pink.html
+    13 +++ b/pink.html
+    14 @@ -7,8 +7,7 @@
+    15  </head>
+    16  <body>
+    17  <h1 style="color: #F0F">The Pink Page</h1>
+    18 -<p>Pink is <span style="color: #F0F">girly,
+    19 -flirty and fun</span>!</p>
+    20 +<p>Only <span style="color: #F0F">real men</span> wear pink!</p>
+    21  <p><a href="index.html">Return to home page</a></p>
+    22  </body>
+    23  </html>
+    24 --
+    25 2.11.0
+    26
+
+== command reference
+
+=== git log
+
+display committed (not "staged") changes history.
+
+TIPS: use 'git status' to display changes that is staged but before commited.
+
+some most useful forms:
+
+.display only the last one:
+
+    ping@ubuntu1404:~/learngit$ git log -1
+    commit 024b752b45baeccd73ad1707dc743541b1d1a924
+    Merge: ad9a8eb e566ff5
+    Author: ping <songpingemail@gmail.com>
+    Date:   Wed Jan 18 21:59:42 2017 -0500
+
+        merge with user2 & fix confliction hello.py
+
+TIP: 'git log -1' = 'git log HEAD~1..HEAD'
+
+.display log for one specified file only:
+
+    ping@ubuntu1404:~/learngit$ git log --oneline hello.py
+    ad9a8eb add coding: utf-8
+    0df2b58 add hello.py and change readme.txt
+
+.display diff between branches
+
+in feature but no in master
+
+    git log master..feature
+
+in master but no in feature
+
+    git log feature..master
+
+image::https://cloud.githubusercontent.com/assets/2038044/22172469/a33a7f6a-df75-11e6-954c-78e58abb2015.png[]
+
+[TIPS]
+====
+pretty log display:
+
+    git log --pretty=oneline
+
+or just:
+
+    git log --oneline
+
+this equals to:
+
+    git log --pretty=oneline --abbrev-commit
+
+with graph:
+
+    git log --oneline --graph
+
+these variable forms can be joined together, and shortened with 'lg' alias:
+
+    git config --global alias.lg "log --color --graph --pretty=format:'%.....
+
+so a 'git lg' will suffice.
+
+====
+
+=== git config
+
+.global config
+
+'git config --global CMD' will generate a "global" config file: ~/.gitconfig
+
+    [user]
+            name = ping
+            email = songpingemail@gmail.com
+            signingkey = A7323182
+    [color]
+            status = auto
+            branch = auto
+            ui = true
+    [core]
+            excludesfile = /home/ping/.gitignore
+    [merge]
+            tool = vimdiff
+    [alias]
+            co = checkout
+            br = branch
+            d = difftool
+            last = log -1 HEAD
+            cm = commit
+            cst = status
+            lo = log --pretty=oneline --abbrev-commit
+            lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+
+    [diff]
+            tool = vimdiff
+    [difftool]
+            prompt = No
+    [credential]
+            helper = cache --timeout=3600
+
+=== git clean
+
+git-clean - Remove untracked files from the working tree
+
+    ping@ubuntu1404:~/learngit$ touch temp.txt
+    ping@ubuntu1404:~/learngit$ ls
+    hello.py  LICENSE  readme.txt  temp.txt
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Your branch is up-to-date with 'origin/dev'.
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            temp.txt
+
+    nothing added to commit but untracked files present (use "git add" to track)
+
+    ping@ubuntu1404:~/learngit$ git clean
+    fatal: clean.requireForce defaults to true and neither -i, -n nor -f given; refusing to clean
+
+    ping@ubuntu1404:~/learngit$ git clean -f
+    Removing temp.txt
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Your branch is up-to-date with 'origin/dev'.
+
+    nothing to commit, working directory clean
+
+=== git checkout
+
+==== checkout <COMMIT>
+
+* only move the HEAD, but not moving a branch
+* working dir will be changed accordingly
+
+image::https://cloud.githubusercontent.com/assets/2038044/22314534/10f0ad96-e330-11e6-8602-7f86fb34015d.png[]
+
+image::https://cloud.githubusercontent.com/assets/2038044/22314560/3a1bd74a-e330-11e6-85df-11b8e20ebf1d.png[]
+
+==== checkout <COMMIT> <FILE>
+
+* copy a file from repo to working dir
+* won't change branch
+
+image::https://cloud.githubusercontent.com/assets/2038044/22316679/d240b99e-e33c-11e6-9d7b-15b561f0cc8b.png[]
+
+=== git reset
+
+* moved (tip of) branch to some specific commits - like "goto"
+* can be used to "delete" some of commit
+
+image::https://cloud.githubusercontent.com/assets/2038044/22316226/e43122fe-e339-11e6-9057-f9e9dae8a579.png[]
+
+image::https://cloud.githubusercontent.com/assets/2038044/22316240/f4de9fd2-e339-11e6-9bbd-14279446f591.png[]
+
+==== reset <COMMIT>
+
+* reset current HEAD to a specific commit
+* normally <COMMIT> is HEAD
+* influced by '--hard/mixed/soft'
+ 
+===== --hard, --mixed, --soft
+
+image::https://cloud.githubusercontent.com/assets/2038044/22313959/3a17237e-e32d-11e6-9927-fdca7222d034.png[]
+
+.hard:
+
+reset all 3 components: working dir, stage, and repo
+
+.mix
+
+reset repo and stage, leave working dir unchanged
+
+.soft
+
+reset only repo
+
+===== git reset --soft <COMMIT>
+
+just reset repo to <COMMIT>, leave working and staging area unchanged
+
+say you made some commit on master:
+
+    ping@ubuntu1404:~/my-git-repo/about$ git lg
+    * 3e1c310 - (HEAD -> master) add contents to about page (2 seconds ago)<ping>       #<------
+    * 69c1c12 - add empty page in about folder (75 seconds ago)<ping>   #<------
+    *   359100f - Merge branch 'crazy' (17 minutes ago)<ping>
+
+    ping@ubuntu1404:~/my-git-repo/about$ git br
+    * master
+
+but then regret: you should have put the work on a new branch instead of
+master.  use '--soft' to move HEAD back to where just before the new work,
+while still keeping the the new work undeleted.
+
+    ping@ubuntu1404:~/my-git-repo/about$ git reset --soft 3591
+
+working dir remains unchanged - work not being lost:
+
+    ping@ubuntu1404:~/my-git-repo/about$ ls
+    index.html
+
+stage area also remain unchanged:
+
+    ping@ubuntu1404:~/my-git-repo/about$ git st
+    On branch master
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   index.html
+
+now creating and switch to a new branch:
+
+    ping@ubuntu1404:~/my-git-repo/about$ git co -b about
+    A       about/index.html    #<------
+    Switched to a new branch 'about'
+
+    ping@ubuntu1404:~/my-git-repo/about$ git br
+    * about
+      master
+
+    ping@ubuntu1404:~/my-git-repo/about$ git lg
+    *   359100f - (HEAD -> about, master) Merge branch 'crazy' (21 minutes ago)<ping>
+    |\
+    | * 223b2bb - Add new item for rainbow (42 minutes ago)<ping>
+    | * 078238e - link index.html to rainbow.html (6 hours ago)<ping>
+    | * 1e6598d - add css stylesheet to rainbow.html (6 hours ago)<ping>
+    | *   7bdf73f - Merge branch 'master' into crazy (7 hours ago)<ping>
+
+the old work in working dir, and staged area, both still remains:
+
+    ping@ubuntu1404:~/my-git-repo/about$ ls
+    index.html
+
+    ping@ubuntu1404:~/my-git-repo/about$ git st
+    On branch about
+    Changes to be committed:    #<------
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   index.html
+
+now commit the staged work:
+
+    ping@ubuntu1404:~/my-git-repo/about$ git cm -am "add contents to about page"
+    [about aae3ff1] add contents to about page
+     1 file changed, 17 insertions(+)
+     create mode 100644 about/index.html
+
+    ping@ubuntu1404:~/my-git-repo/about$ git st
+    On branch about
+    nothing to commit, working tree clean
+
+the work now got committed in 'about' branch, 
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git lg
+    * aae3ff1 - (HEAD -> about) add contents to about page (34 seconds ago)<ping>       #<------
+    *   359100f - (master) Merge branch 'crazy' (23 minutes ago)<ping>
+
+and not available in master (so working tree in master branch is also clean)
+
+    ping@ubuntu1404:~/my-git-repo/about$ git co master
+    Switched to branch 'master'
+    ping@ubuntu1404:~/my-git-repo/about$ git st
+    fatal: unable to get current working directory: No such file or directory
+    ping@ubuntu1404:~/my-git-repo/about$ cd ..
+
+    ping@ubuntu1404:~/Dropbox/my-git-repo$ git st
+    On branch master
+    nothing to commit, working tree clean
+
+===== git reset --mixed <COMMIT>
+
+reset all 3 components: repo/staging area/working area, to what they were at
+the time of <COMMIT>
+
+===== git reset --hard <COMMIT>
+
+reset all 3 components: repo/staging area/working area, to what they were at
+the time of <COMMIT>
+
+==== reset <COMMIT> <FILE>
+
+* use <COMMIT> version of a file to reset the specified same file 
+* normally <COMMIT> is 'HEAD'
+* not influced by '--soft/mix/hard'
+
+image::https://cloud.githubusercontent.com/assets/2038044/22316525/aac94490-e33b-11e6-8b70-032f01bce8ac.png[]
+
+===== default 'git reset' - undo 'git add'
+
+work on some change: here adding new file(s)
+
+    ping@ubuntu1404:~/learngit$ touch temp.txt
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Your branch is up-to-date with 'origin/dev'.
+
+    Untracked files:
+      (use "git add <file>..." to include in what will be committed)
+
+            temp.txt
+
+    nothing added to commit but untracked files present (use "git add" to track)
+
+stage the change
+
+    ping@ubuntu1404:~/learngit$ git add temp.txt
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Your branch is up-to-date with 'origin/dev'.
+
+    Changes to be committed:    #<------
+      (use "git reset HEAD <file>..." to unstage)
+
+            new file:   temp.txt
+
+now regret, want to discard the changes in working dir and stage area:
+
+1. to undo stage (discard changes in stage), do a default reset:
+
+    ping@ubuntu1404:~/learngit$ git reset
+
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Your branch is up-to-date with 'origin/dev'.
+
+    Untracked files:    #<------
+      (use "git add <file>..." to include in what will be committed)
+
+            temp.txt
+
+    nothing added to commit but untracked files present (use "git add" to track)
+
+2. to remove untracked files in working dir:
+
+    ping@ubuntu1404:~/learngit$ git clean -f
+    Removing temp.txt
+    ping@ubuntu1404:~/learngit$ git status
+    On branch dev
+    Your branch is up-to-date with 'origin/dev'.
+
+    nothing to commit, working directory clean
+
+same can be achieved via going back to status of last commit:
+
+    ping@ubuntu1404:~/my-git-repo$ git reset --hard
+    HEAD is now at 1d2a2ea add a pink block of color
+
+==== 'git reset HEAD~2 foo.py'
+
+=== git revert
+
+image::https://cloud.githubusercontent.com/assets/2038044/22316385/dbe492ce-e33a-11e6-8e6c-288e3901fcc6.png[]
+
+image::https://cloud.githubusercontent.com/assets/2038044/22316394/e7774b22-e33a-11e6-94a8-51f5773de7a8.png[]
+
+git-revert - Revert some existing commits
+
+undo a commit
+
+say I by mistake deleted a file and commited:
+
+    ping@ubuntu1404:~/my-git-repo$ git lg
+    * 84042e4 - (HEAD -> master) Revert "link html pages to stylesheet" (21 seconds ago)<ping>
+    * a3c8ea6 - delete css (52 seconds ago)<ping>       #<------
+    * 12ecdfe - link html pages to stylesheet (7 minutes ago)<ping>
+    * 0d57262 - Add CSS stylesheet (10 minutes ago)<ping>
+    * 44f3a80 - Revert "Add navigation links" (45 minutes ago)<ping>
+    * bfae2e8 - Revert "Add a crazzzy experiment" (4 years, 1 month ago)<Ryan>
+    * e2e188a - Add a crazzzy experiment (4 years, 1 month ago)<Ryan>
+    * ebf439f - (tag: v1.0) Add navigation links (4 years, 1 month ago)<Ryan>
+    * 578959e - Create blue and orange pages (4 years, 1 month ago)<Ryan>
+    * 67af295 - Create index page (4 years, 1 month ago)<Ryan>
+
+    ping@ubuntu1404:~/my-git-repo$ ls
+    blue.html  index.html  orange.html
+
+I want to revert commit "a3c8":
+
+    ping@ubuntu1404:~/my-git-repo$ git revert a3c8
+    [master 6932529] Revert "delete css"
+     1 file changed, 12 insertions(+)
+     create mode 100644 style.css
+
+after this, the previous commit (to delete style.css file) is "reverted"
+(undo):
+
+    ping@ubuntu1404:~/my-git-repo$ ls
+    blue.html  index.html  orange.html  style.css
+
+    ping@ubuntu1404:~/my-git-repo$ git st
+    On branch master
+    nothing to commit, working tree clean
+
+    ping@ubuntu1404:~/my-git-repo$ git br
+      crazy
+    * master
+
+and git left a record for this 'revert' action:
+
+    ping@ubuntu1404:~/my-git-repo$ git lg
+    * 6932529 - (HEAD -> master) Revert "delete css" (21 seconds ago)<ping>     #<------
+    * 84042e4 - Revert "link html pages to stylesheet" (64 seconds ago)<ping>
+    * a3c8ea6 - delete css (2 minutes ago)<ping>
+    * 12ecdfe - link html pages to stylesheet (8 minutes ago)<ping>
+    * 0d57262 - Add CSS stylesheet (10 minutes ago)<ping>
+    * 44f3a80 - Revert "Add navigation links" (46 minutes ago)<ping>
+    * bfae2e8 - Revert "Add a crazzzy experiment" (4 years, 1 month ago)<Ryan>
+    * e2e188a - Add a crazzzy experiment (4 years, 1 month ago)<Ryan>
+    * ebf439f - (tag: v1.0) Add navigation links (4 years, 1 month ago)<Ryan>
+    * 578959e - Create blue and orange pages (4 years, 1 month ago)<Ryan>
+    * 67af295 - Create index page (4 years, 1 month ago)<Ryan>
+
+
+=== bare repo
+
+    git init --bare dir
+
+same as normal repo, but no working tree.
+
+used as a central repo to hold pushed from all DEs.
+
+=== git branch
+
+to remove a remote branch
+
+    git push origin --delete <branch_name>
+
+to list all (local and remote) branches:
+
+    git br -a
+
+=== git archive
+
+    ping@ubuntu1404:~/my-git-repo$ git archive master --format=tar --output=../my-git-repo.master.tar
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo$ ls -lct .. | head
+    total 104
+    -rw-rw-r-- 1 ping ping 20480 Jan 23 22:22 my-git-repo.master.tar    #<------
+    drwxrwxr-x 4 ping ping  4096 Jan 23 01:53 marys-repo
+    drwxrwxr-x 4 ping ping  4096 Jan 23 01:47 my-git-repo
+    drwxrwxr-x 4 ping ping  4096 Jan 22 00:22 johns-repo
+    drwxrwxr-x 4 ping ping  4096 Jan 21 15:54 central-repo
+    lrwxrwxrwx 1 ping ping    35 Jan 21 00:01 learngit -> /home/ping/mytest-project/learngit/
+
+    ping@ubuntu1404:~/Dropbox/git$ tar tf my-git-repo.master.tar
+    about/
+    about/index.html
+    about/mary.html
+    about/me.html
+    blue.html
+    green.html
+    index.html
+    news-1.html
+    news-2.html
+    news-3.html
+    orange.html
+    pink.html
+    rainbow.html
+    red.html
+    style.css
+    yellow.html
+
+
+=== git bunble
+
+create a bundle for a repo
+
+    ping@ubuntu1404:~/my-git-repo$ git bundle create ../my-git-repo.master.bundle master
+    Counting objects: 98, done.
+    Delta compression using up to 4 threads.
+    Compressing objects: 100% (95/95), done.
+    Writing objects: 100% (98/98), 11.55 KiB | 0 bytes/s, done.
+    Total 98 (delta 46), reused 0 (delta 0)
+    ping@ubuntu1404:~/my-git-repo$
+    ping@ubuntu1404:~/my-git-repo$
+    ping@ubuntu1404:~/my-git-repo$ git ref -3
+    1d2a2ea HEAD@{0}: merge patch-integration: Fast-forward
+    fe71224 HEAD@{1}: checkout: moving from patch-integration to master
+    1d2a2ea HEAD@{2}: am: add a pink block of color
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * 1d2a2ea - (HEAD -> master, origin/master) add a pink block of color (21 hours ago)<Mary>
+    * 64ef382 - change pink to a manly color (21 hours ago)<Mary>
+    * fe71224 - (john/pink-page) add pink page (2 days ago)<john>
+
+a binary bundle file is generated:
+
+    ping@ubuntu1404:~$ cd Dropbox/git/
+    ping@ubuntu1404:~/Dropbox/git$ ls -lct | head
+    total 120
+    -rw-rw-r-- 1 ping ping 11900 Jan 23 22:25 my-git-repo.master.bundle #<------
+    ......
+
+    ping@ubuntu1404:~/Dropbox/git$ less my-git-repo.master.bundle
+    "my-git-repo.master.bundle" may be a binary file.  See it anyway?
+
+we use the bundle file as source repo, to clone a new repo. but ...
+
+    ping@ubuntu1404:~/Dropbox/git$ git clone my-git-repo.master.bundle my-git-repo.master.bundle.clone
+    Cloning into 'my-git-repo.master.bundle.clone'...
+    Receiving objects: 100% (98/98), 11.55 KiB | 0 bytes/s, done.
+    Resolving deltas: 100% (46/46), done.
+    warning: remote HEAD refers to nonexistent ref, unable to checkout.
+
+    ping@ubuntu1404:~/Dropbox/git$ cd my-git-repo.master.bundle.clone/
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master.bundle.clone$ ls -la
+    total 24
+    drwxrwxr-x 3 ping ping 4096 Jan 23 22:27 .
+    drwxrwxr-x 8 ping ping 4096 Jan 23 22:27 ..
+    drwxrwxr-x 7 ping ping 4096 Jan 23 22:27 .git       #<------
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master.bundle.clone$ git lg -3
+    fatal: your current branch 'master' does not have any commits yet
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master.bundle.clone$ git br -a
+      remotes/origin/master
+
+so it looks we have to specify a branch name:
+
+    ping@ubuntu1404:~/Dropbox/git$ git clone my-git-repo.master.bundle my-git-repo.master.bundle.clone -b master
+    Cloning into 'my-git-repo.master.bundle.clone'...
+    Receiving objects: 100% (98/98), 11.55 KiB | 0 bytes/s, done.
+    Resolving deltas: 100% (46/46), done.
+
+    ping@ubuntu1404:~/Dropbox/git$ cd my-git-repo.master.bundle.clone/
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master.bundle.clone$ ls -l
+    about  blue.html  green.html  index.html  news-1.html  news-2.html
+    news-3.html  orange.html  pink.html  rainbow.html  red.html  style.css
+    yellow.html
+
+now we can see branch master, and only master (also remote master looks like)
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master.bundle.clone$ git br -a
+    * master
+      remotes/origin/master
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master.bundle.clone$ git lg -3
+    * 1d2a2ea - (HEAD -> master, origin/master) add a pink block of color (21 hours ago)<Mary>
+    * 64ef382 - change pink to a manly color (21 hours ago)<Mary>
+    * fe71224 - add pink page (2 days ago)<john>
+
+this is exactly the same with cloning from a normal repo, with '-b branch':
+
+    ping@ubuntu1404:~/Dropbox/git$ git clone my-git-repo my-git-repo.master -b master
+    Cloning into 'my-git-repo.master'...
+    done.
+    ping@ubuntu1404:~/Dropbox/git$ cd my-git-repo.master
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master$ ls
+    about  blue.html  green.html  index.html  news-1.html  news-2.html
+    news-3.html  orange.html  pink.html  rainbow.html  red.html  style.css
+    yellow.html
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master$ git br -a
+    * master
+      remotes/origin/HEAD -> origin/master
+      remotes/origin/master
+
+the original repo has all branches:
+
+    ping@ubuntu1404:~/Dropbox/git/my-git-repo.master$ cd ~/my-git-repo
+    ping@ubuntu1404:~/my-git-repo$ git br -a
+    * master
+      remotes/john/pink-page
+      remotes/origin/master
+
+
+=== git HEAD path notation: '^[^*]N' , '~N'
+
+* '^': each '^' indicate one level up
+* '^N': the #N node in the (direct) up level, N can be omitted if it is 1
+* '~N': Nth upper level, first node in that level. 
+
+so: '~3' = '^1^1^1' = '^^^1' = '^^^'
+
+        1   2   3   4
+
+        G   H   I   J
+         \ /     \ /
+          D   E   F
+           \  |  / \
+            \ | /   |
+             \|/    |
+              B     C
+               \   /
+                \ /
+                 A
+
+        A =      = A^0
+        B = A^   = A^1     = A~1
+        C = A^2  = A^2
+        D = A^^  = A^1^1   = A~2
+        E = B^2  = A^^2
+        F = B^3  = A^^3
+        G = A^^^ = A^1^1^1 = A~3
+        H = D^2  = B^^2    = A^^^2  = A~2^2
+        I = F^   = B^3^    = A^^3^
+        J = F^2  = B^3^2   = A^^3^2
+
+http://stackoverflow.com/questions/2221658/whats-the-difference-between-head-and-head-in-git
+
+
+=== git diff
+
+current status and change history:
+
+    ping@ubuntu1404:~/my-git-repo$ git st
+    On branch master
+    nothing to commit, working tree clean
+
+    ping@ubuntu1404:~/my-git-repo$ git lg -3
+    * 1d2a2ea - (HEAD -> master, origin/master) add a pink block of color (2 days ago)<Mary>
+    * 64ef382 - change pink to a manly color (2 days ago)<Mary>
+    * fe71224 - (john/pink-page) add pink page (3 days ago)<john>
+
+
+----
+working dir           staged/indexed area              repository
+                          (snapshot)                committed snapshot
+             diff <1>
+   change    -------->               
+             add
+   change    -------->               
+             add                    diff --cache <2>
+                                     --------->  v0
+                                     commit
+
+             |<----------------diff HEAD------>   <3>
+
+             add
+   change    -------->               
+                                         --------->  v1 (HEAD^)
+                                         commit          ^
+                                                         ||
+       change    -------->                               ||             
+                                                         ||diff HEAD..HEAD^ <4>
+                                                         ||
+                                                         ||
+                                                         |v
+                                         --------->  v2 (HEAD)
+                                         commit
+----
+
+<1> diff between working dir and staged/cache change
+<2> diff between staged/cached change and current HEAD
+<3> diff between working dir and current HEAD
+<4> diff between commits
+
+==== 'git diff'
+
+==== 'git diff -cache'
+
+
+==== 'git diff HEAD'
+
+
+==== 'git diff HEAD..HEAD~1'
+
+diff between current committed version and previous commit in the repo:
+
+    ping@ubuntu1404:~/my-git-repo$ git diff HEAD..HEAD~1
+    diff --git a/pink.html b/pink.html
+    index 8824548..11c50da 100644       #<------file index
+    --- a/pink.html
+    +++ b/pink.html
+    @@ -4,17 +4,10 @@
+     <title>The Pink Page</title>
+     <link rel="stylesheet" href="style.css" />
+     <meta charset="utf-8" />
+    -<style>
+    -div {
+    -    width: 300px;
+    -    height: 50px;
+    -}
+    -</style>
+     </head>
+     <body>
+     <h1 style="color: #F0F">The Pink Page</h1>
+     <p>Only <span style="color: #F0F">real men</span> wear pink!</p>
+    -<div style="background-color: #F0F"></div>
+     <p><a href="index.html">Return to home page</a></p>
+     </body>
+     </html>
+
+==== git show
+
+we can then use 'git show <file index>' to check the file(s) in comparison -
+the 'file index' is shown in the 'git diff' output - what the file(s) looks
+like at the moment of the two different versions, repectively.
+
+at the moment of 'HEAD' (latest , current commit):
+
+    ping@ubuntu1404:~/my-git-repo$ git show 8824
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <title>The Pink Page</title>
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8" />
+    <style>
+    div {
+        width: 300px;
+        height: 50px;
+    }
+    </style>
+    </head>
+    <body>
+    <h1 style="color: #F0F">The Pink Page</h1>
+    <p>Only <span style="color: #F0F">real men</span> wear pink!</p>
+    <div style="background-color: #F0F"></div>
+    <p><a href="index.html">Return to home page</a></p>
+    </body>
+    </html>
+
+at the moment of 'HEAD~1' - the parent commit of current one ('HEAD')
+
+    ping@ubuntu1404:~/my-git-repo$ git show 11c5
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <title>The Pink Page</title>
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8" />
+    </head>
+    <body>
+    <h1 style="color: #F0F">The Pink Page</h1>
+    <p>Only <span style="color: #F0F">real men</span> wear pink!</p>
+    <p><a href="index.html">Return to home page</a></p>
+    </body>
+    </html>
+
+we can even manually generate a diff based on these 2 'git show' output:
+
+    ping@ubuntu1404:~/my-git-repo$ diff <( git show 8824 ) <(git show 11c5)
+    7,12d6
+    < <style>
+    < div {
+    <     width: 300px;
+    <     height: 50px;
+    < }
+    < </style>
+    17d10
+    < <div style="background-color: #F0F"></div>
+
+this shows the exact same result as 'git diff', which is more convenient and
+straightforward
+
+to show diff between "2nd last" and "3rd last" commit:
+
+    ping@ubuntu1404:~/my-git-repo$ git diff HEAD^..HEAD^^
+    diff --git a/pink.html b/pink.html
+    index 11c50da..a10f32d 100644
+    --- a/pink.html
+    +++ b/pink.html
+    @@ -7,7 +7,8 @@
+     </head>
+     <body>
+     <h1 style="color: #F0F">The Pink Page</h1>
+    -<p>Only <span style="color: #F0F">real men</span> wear pink!</p>
+    +<p>Pink is <span style="color: #F0F">girly,
+    +flirty and fun</span>!</p>
+     <p><a href="index.html">Return to home page</a></p>
+     </body>
+     </html>
+
+'HEAD^' = 'HEAD~1':
+
+    ping@ubuntu1404:~/my-git-repo$ git diff HEAD^..HEAD~1
+    ping@ubuntu1404:~/my-git-repo$ 
+
+=== git rebase
+
+== misc
+
+=== gitignore
+
+https://github.com/github/gitignore
+
+=== alias
+
+    git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit"
+
+    ping@ubuntu1404:~/learngit$ git lg
+    *   024b752 - (HEAD, origin/dev, dev) merge with user2 & fix confliction hello.py (2 hours ago)<ping>
+    |\
+    | * e566ff5 - add /usr/bin/env python (3 hours ago)<ping>
+    * | ad9a8eb - add coding: utf-8 (2 hours ago)<ping>
+    |/
+    * 0df2b58 - add hello.py and change readme.txt (3 hours ago)<ping>
+    * 8eb7f3f - add merge (23 hours ago)<ping>
+    *   89fb295 - conflict fixed (24 hours ago)<ping>
+    |\
+    | * dae9a4b - AND simple (24 hours ago)<ping>
+    | * 06025b4 - AND simple (24 hours ago)<ping>
+    * | 71a9574 - & simple (24 hours ago)<ping>
+    |/
+    * c63c858 - branch test (26 hours ago)<ping>
+    * 0cb81a3 - remove test.txt (27 hours ago)<ping>
+    * 1f9259c - add test.txt (27 hours ago)<ping>
+    * 3320c2b - extra comit than book (27 hours ago)<ping>
+    * 9321a6d - git tracks 2nd changes (2 days ago)<ping>
+    * b85642d - git tracks changes (2 days ago)<ping>
+    * e516429 - understand how stage works (2 days ago)<ping>
+    * 018259a - append GPL (2 days ago)<ping>
+    * f045d1e - (tag: v0.2) add distributed (2 days ago)<ping>
+    * d452688 - wrote a readme file (2 days ago)<ping>
+
+image::https://cloud.githubusercontent.com/assets/2038044/22112433/e7302850-de30-11e6-8566-3eaadc762de0.png[]
+
+
+=== gui clients
+
+==== github desktop
+
+==== smartgit
+
+==== tower
+
+=== 'detached HEAD'
+
+.great doc:
+
+* https://www.git-tower.com/learn/git/faq/detached-head-when-checkout-commit
+
+git checkout to a specific commit leads to 'detached HEAD'
+
+    ping@ubuntu1404:~/learngit$ git branch
+    * dev
+      issue-101
+      master
+
+    ping@ubuntu1404:~/learngit$ git co d452
+    Note: checking out 'd452'.
+
+    You are in 'detached HEAD' state. You can look around, make experimental
+    changes and commit them, and you can discard any commits you make in this
+    state without impacting any branches by performing another checkout.
+
+    If you want to create a new branch to retain commits you create, you may
+    do so (now or later) by using -b with the checkout command again. Example:
+
+      git checkout -b new_branch_name
+
+    HEAD is now at d452688... wrote a readme file
+
+    ping@ubuntu1404:~/learngit$ ls
+    readme.txt
+    ping@ubuntu1404:~/learngit$ cat readme.txt
+    Git is a version control system.
+    Git is free software.
+
+problem: couldn't get back:
+
+    ping@ubuntu1404:~/learngit$ git co dev
+    error: Your local changes to the following files would be overwritten by checkout:
+            readme.txt
+    Please, commit your changes or stash them before you can switch branches.
+    Aborting
+
+    ping@ubuntu1404:~/learngit$ git status
+    HEAD detached at d452688
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+
+            modified:   readme.txt
+
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+    ping@ubuntu1404:~/learngit$ git log --oneline
+    d452688 wrote a readme file
+
+    ping@ubuntu1404:~/learngit$ git reflog
+    d452688 HEAD@{0}: checkout: moving from dev to d452
+    024b752 HEAD@{1}: checkout: moving from master to dev
+    30da943 HEAD@{2}: checkout: moving from dev to master
+    ......
+
+==== finally commit and switch back:
+
+commit:
+
+    ping@ubuntu1404:~/learngit$ git commit -am "temp"
+    [detached HEAD a6c5135] temp
+     1 file changed, 0 insertions(+), 0 deletions(-)
+     mode change 100644 => 100755 readme.txt
+
+    ping@ubuntu1404:~/learngit$ git status
+    HEAD detached from d452688
+    nothing to commit, working directory clean
+    ping@ubuntu1404:~/learngit$ git br
+    * (detached from d452688)   #<------
+      dev
+      issue-101
+      master
+
+switch back:
+
+    ping@ubuntu1404:~/learngit$ git co dev
+    Warning: you are leaving 1 commit behind, not connected to
+    any of your branches:
+
+      a6c5135 temp
+
+    If you want to keep them by creating a new branch, this may be a good time
+    to do so with:
+
+     git branch new_branch_name a6c5135
+
+    Switched to branch 'dev'
+    Your branch is up-to-date with 'origin/dev'.
+
+    ping@ubuntu1404:~/learngit$ git br
+    * dev       #<------now we are back
+      issue-101
+      master
+
+    ping@ubuntu1404:~/learngit$ git log --oneline
+    024b752 merge with user2 & fix confliction hello.py
+    ad9a8eb add coding: utf-8
+    e566ff5 add /usr/bin/env python
+    0df2b58 add hello.py and change readme.txt
+    8eb7f3f add merge
+    89fb295 conflict fixed
+    .....
+
+    ping@ubuntu1404:~/learngit$ git reflog
+    024b752 HEAD@{0}: checkout: moving from a6c5135b276bef1a050c6215a823c33512083e2a to dev     #<------
+    a6c5135 HEAD@{1}: commit: temp                              #<------
+    d452688 HEAD@{2}: checkout: moving from dev to d452         #<------
+    024b752 HEAD@{3}: checkout: moving from master to dev
+    30da943 HEAD@{4}: checkout: moving from dev to master
+    024b752 HEAD@{5}: commit (merge): merge with user2 & fix confliction hello.py
+
+==== solution
+
+    $ git checkout -b test-branch 56a4e5c08
+
+    ...do your thing...
+
+    $ git checkout master
+    $ git branch -d test-branch
+
+=== git hooks
+
+== import rules
+
+=== never rebase commits that have been pushed to a shared repo
+
+suppose:
+* you made 2 commits, then published/pushed to central remote
+* you figured out you need a rebase - to squash the 2nd commit and just pick
+  the 1st one
+* you did the rebase in local
+
+now the local and remote master will look:
+
+image::https://cloud.githubusercontent.com/assets/2038044/22170436/5834d24c-df4b-11e6-9981-3571f834aa33.png[]
+
+        pushed, before rebase                   pushed, then rebase
+
+                  origin/master                              origin/master 
+                      |                                          |
+                      |                                          |
+                      v                                          v
+     0 ------ a ----- b                         0 ------ a ----- b
+                      ^                           \        
+                      |                            \        
+                      |                             ------------ c
+                 (local/)master                                            
+                                                                 ^
+                                                                 |
+                                                                 |
+                                                            (local/)master
+
+now in order to push the rebase to remote, a 3-way merge will be required, this
+mess the flow and will confuse other DEs.
+
+use 'revert' 
+
+== common issues
+
+
+== full chart
+
+    working dir           staged/indexed area              repository
+                              (snapshot)                committed snapshot
+
+                 diff
+       change    -------->               
+                 add
+       change    -------->               
+                 add                     diff --cache
+                                         --------->  v0
+                                         commit
+       change    -------->               
+                 add
+                                         --------->  v1 (HEAD^)
+                                         commit          ^
+                                                         ||     HEAD^
+       change    -------->                               ||             
+                 add                                     ||reset --hard CMID
+                                                         ||
+                                                         ||diff HEAD..HEAD^
+                                                         ||
+                                                         |v     12345
+                                         --------->  v2 (HEAD)
+                                         commit
+
+        diff HEAD
+    <--------(-------------------------------------)
+         checkout -- file.txt
+         (discard change in working dir)
+         or:
+         clean -f (for untracked file)
+
+
+       change    -------->               
+                 add
+                 <-------
+                 unstage: 
+                 reset HEAD file.txt
+                (or just git reset)
+
+       change
+       rm file.txt
+                 ------->
+                 git rm
+                                         --------->  vx (HEAD)
+                                         commit (the rm)
+
+
