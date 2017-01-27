@@ -809,347 +809,158 @@ table.CodeRay td.code>pre{padding:0}
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Content</div>
 <ul class="sectlevel1">
-<li><a href="#_pending_issue">1. pending issue</a></li>
-<li><a href="#_basics">2. basics</a></li>
-<li><a href="#_git_working_dir_stage_index_master_head">3. git working dir, stage(index), master, head:</a>
+<li><a href="#_basics">1. basics</a></li>
+<li><a href="#_git_working_dir_stage_index_master_head">2. git working dir, stage(index), master, head:</a>
 <ul class="sectlevel2">
-<li><a href="#_chart_basic_term_working_dir_staged_index_repository_master">3.1. chart: basic term (working dir, staged/index, repository/master)</a></li>
+<li><a href="#_chart_basic_term_working_dir_staged_index_repository_master">2.1. chart: basic term (working dir, staged/index, repository/master)</a></li>
 </ul>
 </li>
-<li><a href="#_chart_branch">4. chart: branch</a></li>
-<li><a href="#_merge">5. merge</a>
+<li><a href="#_chart_branch">3. chart: branch</a></li>
+<li><a href="#_merge">4. merge</a>
 <ul class="sectlevel2">
-<li><a href="#_fast_forward">5.1. fast forward</a></li>
-<li><a href="#_confliction">5.2. confliction</a></li>
-<li><a href="#__no_ff_disable_ff">5.3. --no-ff: disable ff</a></li>
-<li><a href="#_3_way_merge">5.4. 3-way merge</a></li>
+<li><a href="#_fast_forward">4.1. fast forward</a></li>
+<li><a href="#_confliction">4.2. confliction</a></li>
+<li><a href="#__no_ff_disable_ff">4.3. --no-ff: disable ff</a></li>
+<li><a href="#_3_way_merge">4.4. 3-way merge</a></li>
 </ul>
 </li>
-<li><a href="#_stash">6. stash</a></li>
-<li><a href="#_remote">7. remote</a>
+<li><a href="#_stash">5. stash</a></li>
+<li><a href="#_remote">6. remote</a>
 <ul class="sectlevel2">
-<li><a href="#_local_fs">7.1. local FS</a>
+<li><a href="#_local_fs">6.1. local FS</a>
 <ul class="sectlevel3">
-<li><a href="#__local_config">7.1.1. "local" config:</a></li>
-<li><a href="#_add_remote">7.1.2. add remote</a></li>
-<li><a href="#__fetch_remote_branches_in">7.1.3. 'fetch' remote branches in</a></li>
-<li><a href="#_merge_a_remote_branch_in">7.1.4. merge a remote branch in</a></li>
-<li><a href="#__push_to_a_remote_repo">7.1.5. 'push' to a remote repo</a></li>
-<li><a href="#_push_a_local_tag">7.1.6. push a local tag</a></li>
+<li><a href="#__local_config">6.1.1. "local" config:</a></li>
+<li><a href="#_add_remote">6.1.2. add remote</a></li>
+<li><a href="#__fetch_remote_branches_in">6.1.3. 'fetch' remote branches in</a></li>
+<li><a href="#_merge_a_remote_branch_in">6.1.4. merge a remote branch in</a></li>
+<li><a href="#__push_to_a_remote_repo">6.1.5. 'push' to a remote repo</a></li>
+<li><a href="#_push_a_local_tag">6.1.6. push a local tag</a></li>
 </ul>
 </li>
-<li><a href="#_github">7.2. github</a></li>
+<li><a href="#_github">6.2. github</a></li>
 </ul>
 </li>
-<li><a href="#_centralized_workflow">8. centralized workflow</a>
+<li><a href="#_centralized_workflow">7. centralized workflow</a>
 <ul class="sectlevel2">
-<li><a href="#_create_the_central_hub_repo">8.1. create the central/hub repo</a></li>
-<li><a href="#_de1_push_change1">8.2. DE1: push change1</a></li>
-<li><a href="#_de2_push_change2">8.3. DE2: push change2</a></li>
-<li><a href="#_de2_push_got_rejected">8.4. DE2: push got rejected</a></li>
-<li><a href="#_de2_rebase_and_then_push">8.5. DE2: rebase and then push</a></li>
-<li><a href="#_de1_fetch">8.6. DE1: fetch</a></li>
-<li><a href="#_de1_check_what_is_new_in_the_remote_branch">8.7. DE1: check what is new in the remote branch:</a></li>
-<li><a href="#_de1_ff_merge_remote_branch_into_local">8.8. DE1: (ff) merge remote branch into local:</a></li>
+<li><a href="#_create_the_central_hub_repo">7.1. create the central/hub repo</a></li>
+<li><a href="#_de1_push_change1">7.2. DE1: push change1</a></li>
+<li><a href="#_de2_push_change2">7.3. DE2: push change2</a></li>
+<li><a href="#_de2_push_got_rejected">7.4. DE2: push got rejected</a></li>
+<li><a href="#_de2_rebase_and_then_push">7.5. DE2: rebase and then push</a></li>
+<li><a href="#_de1_fetch">7.6. DE1: fetch</a></li>
+<li><a href="#_de1_check_what_is_new_in_the_remote_branch">7.7. DE1: check what is new in the remote branch:</a></li>
+<li><a href="#_de1_ff_merge_remote_branch_into_local">7.8. DE1: (ff) merge remote branch into local:</a></li>
 </ul>
 </li>
-<li><a href="#_distributed_workflow">9. distributed workflow</a></li>
-<li><a href="#_patch_workflow">10. patch workflow</a>
+<li><a href="#_distributed_workflow">8. distributed workflow</a></li>
+<li><a href="#_patch_workflow">9. patch workflow</a>
 <ul class="sectlevel2">
-<li><a href="#_de2_commit_some_changes">10.1. DE2 commit some changes</a></li>
-<li><a href="#_de2_generate_a_patch_for_the_new_work">10.2. DE2 generate a patch for the new work:</a></li>
-<li><a href="#_patch_files">10.3. patch files</a></li>
-<li><a href="#_de2_send_patch_files_to_maintainer_de1">10.4. DE2 send patch files to maintainer DE1</a></li>
-<li><a href="#_maintainer_de1_apply_the_patch">10.5. maintainer/DE1 apply the patch</a></li>
-<li><a href="#_de2_update_master_by_pull_changes_from_central_repo">10.6. DE2 update master: by pull changes from central repo</a></li>
+<li><a href="#_de2_commit_some_changes">9.1. DE2 commit some changes</a></li>
+<li><a href="#_de2_generate_a_patch_for_the_new_work">9.2. DE2 generate a patch for the new work:</a></li>
+<li><a href="#_patch_files">9.3. patch files</a></li>
+<li><a href="#_de2_send_patch_files_to_maintainer_de1">9.4. DE2 send patch files to maintainer DE1</a></li>
+<li><a href="#_maintainer_de1_apply_the_patch">9.5. maintainer/DE1 apply the patch</a></li>
+<li><a href="#_de2_update_master_by_pull_changes_from_central_repo">9.6. DE2 update master: by pull changes from central repo</a></li>
 </ul>
 </li>
-<li><a href="#_tag">11. tag</a></li>
-<li><a href="#_rebase">12. rebase</a>
+<li><a href="#_tag">10. tag</a></li>
+<li><a href="#_rebase">11. rebase</a>
 <ul class="sectlevel2">
-<li><a href="#_rebase_for_merging_branch">12.1. rebase for merging branch</a></li>
-<li><a href="#_rebase_for_merging_commit">12.2. rebase for merging commit</a>
+<li><a href="#_rebase_for_merging_branch">11.1. rebase for merging branch</a></li>
+<li><a href="#_rebase_for_merging_commit">11.2. rebase for merging commit</a>
 <ul class="sectlevel3">
-<li><a href="#__squash">12.2.1. 'squash'</a></li>
-<li><a href="#__edit">12.2.2. 'edit'</a></li>
+<li><a href="#__squash">11.2.1. 'squash'</a></li>
+<li><a href="#__edit">11.2.2. 'edit'</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_changing_history">13. changing history</a>
+<li><a href="#_changing_history">12. changing history</a>
 <ul class="sectlevel2">
-<li><a href="#_1st_changes">13.1. 1st changes:</a></li>
-<li><a href="#_2nd_change">13.2. 2nd change:</a></li>
-<li><a href="#_define_the_desired_commit_sequence">13.3. define the desired commit sequence</a></li>
-<li><a href="#_use_rebase_to_edit_first_commit">13.4. use rebase to edit first commit</a></li>
-<li><a href="#_reset_mixed_head_1">13.5. reset --mixed HEAD~1</a></li>
-<li><a href="#_produce_the_desired_1st_commit">13.6. produce the desired 1st commit</a></li>
-<li><a href="#_producing_the_desired_2nd_commit">13.7. producing the desired 2nd commit</a></li>
-<li><a href="#_run_rebase_continue_to_finish_rebase">13.8. run 'rebase --continue' to finish rebase</a></li>
+<li><a href="#_1st_changes">12.1. 1st changes:</a></li>
+<li><a href="#_2nd_change">12.2. 2nd change:</a></li>
+<li><a href="#_define_the_desired_commit_sequence">12.3. define the desired commit sequence</a></li>
+<li><a href="#_use_rebase_to_edit_first_commit">12.4. use rebase to edit first commit</a></li>
+<li><a href="#_reset_mixed_head_1">12.5. reset --mixed HEAD~1</a></li>
+<li><a href="#_produce_the_desired_1st_commit">12.6. produce the desired 1st commit</a></li>
+<li><a href="#_producing_the_desired_2nd_commit">12.7. producing the desired 2nd commit</a></li>
+<li><a href="#_run_rebase_continue_to_finish_rebase">12.8. run 'rebase --continue' to finish rebase</a></li>
+<li><a href="#_remove_last_commit">12.9. remove last commit</a></li>
+<li><a href="#_recover_the_lost_commit_detached_branch">12.10. recover the lost commit/detached branch</a></li>
+<li><a href="#_merge_green_page_into_master">12.11. merge green-page into master</a></li>
 </ul>
 </li>
-<li><a href="#_patching">14. patching</a></li>
-<li><a href="#_command_reference">15. command reference</a>
+<li><a href="#_patching">13. patching</a></li>
+<li><a href="#_command_reference">14. command reference</a>
 <ul class="sectlevel2">
-<li><a href="#_git_log">15.1. git log</a></li>
-<li><a href="#_git_config">15.2. git config</a></li>
-<li><a href="#_git_clean">15.3. git clean</a></li>
-<li><a href="#_git_checkout">15.4. git checkout</a>
+<li><a href="#_git_log">14.1. git log</a></li>
+<li><a href="#_git_config">14.2. git config</a></li>
+<li><a href="#_git_clean">14.3. git clean</a></li>
+<li><a href="#_git_checkout">14.4. git checkout</a>
 <ul class="sectlevel3">
-<li><a href="#_checkout_commit">15.4.1. checkout &lt;COMMIT&gt;</a></li>
-<li><a href="#_checkout_commit_file">15.4.2. checkout &lt;COMMIT&gt; &lt;FILE&gt;</a></li>
+<li><a href="#_checkout_commit">14.4.1. checkout &lt;COMMIT&gt;</a></li>
+<li><a href="#_checkout_commit_file">14.4.2. checkout &lt;COMMIT&gt; &lt;FILE&gt;</a></li>
 </ul>
 </li>
-<li><a href="#_git_reset">15.5. git reset</a>
+<li><a href="#_git_reset">14.5. git reset</a>
 <ul class="sectlevel3">
-<li><a href="#_reset_commit">15.5.1. reset &lt;COMMIT&gt;</a></li>
-<li><a href="#_reset_commit_file">15.5.2. reset &lt;COMMIT&gt; &lt;FILE&gt;</a></li>
-<li><a href="#__git_reset_head_2_foo_py">15.5.3. 'git reset HEAD~2 foo.py'</a></li>
+<li><a href="#_reset_commit">14.5.1. reset &lt;COMMIT&gt;</a></li>
+<li><a href="#_reset_commit_file">14.5.2. reset &lt;COMMIT&gt; &lt;FILE&gt;</a></li>
+<li><a href="#__git_reset_head_2_foo_py">14.5.3. 'git reset HEAD~2 foo.py'</a></li>
 </ul>
 </li>
-<li><a href="#_git_revert">15.6. git revert</a></li>
-<li><a href="#_bare_repo">15.7. bare repo</a></li>
-<li><a href="#_git_branch">15.8. git branch</a></li>
-<li><a href="#_git_archive">15.9. git archive</a></li>
-<li><a href="#_git_bunble">15.10. git bunble</a></li>
-<li><a href="#_git_head_path_notation_sup_sup_n_n">15.11. git HEAD path notation: '<sup>[</sup>*]N' , '~N'</a></li>
-<li><a href="#_git_diff">15.12. git diff</a>
+<li><a href="#_git_revert">14.6. git revert</a></li>
+<li><a href="#_bare_repo">14.7. bare repo</a></li>
+<li><a href="#_git_branch">14.8. git branch</a></li>
+<li><a href="#_git_archive">14.9. git archive</a></li>
+<li><a href="#_git_bunble">14.10. git bunble</a></li>
+<li><a href="#_git_head_path_notation_sup_sup_n_n">14.11. git HEAD path notation: '<sup>[</sup>*]N' , '~N'</a></li>
+<li><a href="#_git_diff">14.12. git diff</a>
 <ul class="sectlevel3">
-<li><a href="#__git_diff">15.12.1. 'git diff'</a></li>
-<li><a href="#__git_diff_cache">15.12.2. 'git diff -cache'</a></li>
-<li><a href="#__git_diff_head">15.12.3. 'git diff HEAD'</a></li>
-<li><a href="#__git_diff_head_head_1">15.12.4. 'git diff HEAD..HEAD~1'</a></li>
-<li><a href="#_git_show">15.12.5. git show</a></li>
+<li><a href="#__git_diff">14.12.1. 'git diff'</a></li>
+<li><a href="#__git_diff_cache">14.12.2. 'git diff -cache'</a></li>
+<li><a href="#__git_diff_head">14.12.3. 'git diff HEAD'</a></li>
+<li><a href="#__git_diff_head_head_1">14.12.4. 'git diff HEAD..HEAD~1'</a></li>
+<li><a href="#_git_show">14.12.5. git show</a></li>
 </ul>
 </li>
-<li><a href="#_git_rebase">15.13. git rebase</a></li>
+<li><a href="#_git_rebase">14.13. git rebase</a></li>
+<li><a href="#_git_fetch">14.14. git fetch</a></li>
 </ul>
 </li>
-<li><a href="#_misc">16. misc</a>
+<li><a href="#_misc">15. misc</a>
 <ul class="sectlevel2">
-<li><a href="#_gitignore">16.1. gitignore</a></li>
-<li><a href="#_alias">16.2. alias</a></li>
-<li><a href="#_gui_clients">16.3. gui clients</a>
+<li><a href="#_gitignore">15.1. gitignore</a></li>
+<li><a href="#_alias">15.2. alias</a></li>
+<li><a href="#_gui_clients">15.3. gui clients</a>
 <ul class="sectlevel3">
-<li><a href="#_github_desktop">16.3.1. github desktop</a></li>
-<li><a href="#_smartgit">16.3.2. smartgit</a></li>
-<li><a href="#_tower">16.3.3. tower</a></li>
+<li><a href="#_github_desktop">15.3.1. github desktop</a></li>
+<li><a href="#_smartgit">15.3.2. smartgit</a></li>
+<li><a href="#_tower">15.3.3. tower</a></li>
 </ul>
 </li>
-<li><a href="#__detached_head">16.4. 'detached HEAD'</a>
+<li><a href="#__detached_head">15.4. 'detached HEAD'</a>
 <ul class="sectlevel3">
-<li><a href="#_finally_commit_and_switch_back">16.4.1. finally commit and switch back:</a></li>
-<li><a href="#_solution">16.4.2. solution</a></li>
+<li><a href="#_finally_commit_and_switch_back">15.4.1. finally commit and switch back:</a></li>
+<li><a href="#_solution">15.4.2. solution</a></li>
 </ul>
 </li>
-<li><a href="#_git_hooks">16.5. git hooks</a></li>
+<li><a href="#_git_hooks">15.5. git hooks</a></li>
 </ul>
 </li>
-<li><a href="#_import_rules">17. import rules</a>
+<li><a href="#_import_rules">16. import rules</a>
 <ul class="sectlevel2">
-<li><a href="#_never_rebase_commits_that_have_been_pushed_to_a_shared_repo">17.1. never rebase commits that have been pushed to a shared repo</a></li>
+<li><a href="#_never_rebase_commits_that_have_been_pushed_to_a_shared_repo">16.1. never rebase commits that have been pushed to a shared repo</a></li>
 </ul>
 </li>
-<li><a href="#_common_issues">18. common issues</a></li>
-<li><a href="#_full_chart">19. full chart</a></li>
+<li><a href="#_common_issues">17. common issues</a></li>
+<li><a href="#_full_chart">18. full chart</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_pending_issue"><a class="anchor" href="#_pending_issue"></a>1. pending issue</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<div class="title">'git revert CID' often does not work</div>
-<p>say I wan to discard all new commits and move back to a commit "65dc"</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git lg -20
-* c87df22 - (HEAD -&gt; master) unnamed (4 days ago)&lt;ping&gt;
-* 3bc7168 - (blog/master) test (5 months ago)&lt;ping&gt;
-* f4ec0d2 - test (5 months ago)&lt;ping&gt;
-* b19cccc - test (5 months ago)&lt;ping&gt;
-* 3adcadf - test (5 months ago)&lt;ping&gt;
-* 45f0df9 - test (5 months ago)&lt;ping&gt;
-* 680c77b - unnamed (5 months ago)&lt;ping&gt;
-* ba4d8e0 - vmx (9 months ago)&lt;ping&gt;
-* 996bc75 - unnamed (10 months ago)&lt;ping&gt;
-* a7319bf - unnamed (10 months ago)&lt;ping&gt;
-* aa7c5c5 - remove a wrong file (10 months ago)&lt;ping&gt;
-*   96a9dbb - Merge branch 'master' of https://github.com/pinggit/blog (10 months ago)&lt;ping&gt;
-|\
-| * 5f802aa - init (5 years ago)&lt;Linghua Zhang&gt;
-* 65dc5db - vmx-tutorial (10 months ago)&lt;ping&gt;      #&lt;------
-* 76286e7 - unnamed (1 year, 8 months ago)&lt;ping&gt;
-* a7e6c51 - issuechecker (1 year, 8 months ago)&lt;ping&gt;
-* 1a8fe6f - talk about time with xixi (1 year, 9 months ago)&lt;ping&gt;
-* f89b603 - talk about time with xixi (1 year, 9 months ago)&lt;ping&gt;
-* 4dfa5c0 - zizhitongjian-liuxiu-dongxuan (1 year, 10 months ago)&lt;ping&gt;
-* 217ef76 - unnamed (2 years, 1 month ago)&lt;ping&gt;</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>natually I use "revert":</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git revert 65dc
-error: could not revert 65dc5db... vmx-tutorial
-hint: after resolving the conflicts, mark the corrected paths
-hint: with 'git add &lt;paths&gt;' or 'git rm &lt;paths&gt;'
-hint: and commit the result with 'git commit'
-ping@ubuntu1404:~/pinggit$ git st
-On branch master
-Your branch is ahead of 'blog/master' by 1 commit.
-  (use "git push" to publish your local commits)
-You are currently reverting commit 65dc5db.
-  (fix conflicts and run "git revert --continue")
-  (use "git revert --abort" to cancel the revert operation)</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Changes to be committed:
-  (use "git reset HEAD &lt;file&gt;..." to unstage)</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>deleted:    docs/tcl_expect_tips.html</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>Unmerged paths:
-  (use "git reset HEAD &lt;file&gt;..." to unstage)
-  (use "git add/rm &lt;file&gt;..." as appropriate to mark resolution)</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>deleted by them: _posts/2015-09-17-tcl-expect-tips.markdown
-deleted by them: _posts/2015-11-23-vmx-tutorial.markdown
-deleted by them: docs/vmx-tutorial.html
-deleted by them: docs/vmx-tutorial.pdf</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>it doesn&#8217;t look work:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git lg -20
-* c87df22 - (HEAD -&gt; master) unnamed (4 days ago)&lt;ping&gt;
-* 3bc7168 - (blog/master) test (5 months ago)&lt;ping&gt;
-* f4ec0d2 - test (5 months ago)&lt;ping&gt;
-* b19cccc - test (5 months ago)&lt;ping&gt;
-* 3adcadf - test (5 months ago)&lt;ping&gt;
-* 45f0df9 - test (5 months ago)&lt;ping&gt;
-* 680c77b - unnamed (5 months ago)&lt;ping&gt;
-* ba4d8e0 - vmx (9 months ago)&lt;ping&gt;
-* 996bc75 - unnamed (10 months ago)&lt;ping&gt;
-* a7319bf - unnamed (10 months ago)&lt;ping&gt;
-* aa7c5c5 - remove a wrong file (10 months ago)&lt;ping&gt;
-*   96a9dbb - Merge branch 'master' of https://github.com/pinggit/blog (10 months ago)&lt;ping&gt;
-|\
-| * 5f802aa - init (5 years ago)&lt;Linghua Zhang&gt;
-* 65dc5db - vmx-tutorial (10 months ago)&lt;ping&gt;
-* 76286e7 - unnamed (1 year, 8 months ago)&lt;ping&gt;
-......</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ cd _posts/
-ping@ubuntu1404:~/pinggit/_posts$ ls -l | grep expect-tips
--rwxr-x--- 1 ping ping     215 Jan 21 21:29 2015-09-17-tcl-expect-tips.markdown</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>commit won&#8217;t work:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit/_posts$ git add -A .
-ping@ubuntu1404:~/pinggit/_posts$ git cm -m "fix it"
-U       docs/vmx-tutorial.html
-U       docs/vmx-tutorial.pdf
-error: Committing is not possible because you have unmerged files.
-hint: Fix them up in the work tree, and then use 'git add/rm &lt;file&gt;'
-hint: as appropriate to mark resolution and make a commit.
-fatal: Exiting because of an unresolved conflict.</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>found no solution&#8230;&#8203;so just use "hard reset" to clear it.</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git reset --hard 76286e7
-HEAD is now at 76286e7 unnamed</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git st
-On branch master
-nothing to commit, working tree clean</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git reflog -10
-76286e7 HEAD@{0}: reset: moving to 76286e7  #&lt;------
-c87df22 HEAD@{1}: checkout: moving from test-fix to master
-76286e7 HEAD@{2}: checkout: moving from test to test-fix
-......</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git lg -10
-* 76286e7 - (HEAD -&gt; master) unnamed (1 year, 8 months ago)&lt;ping&gt;
-* a7e6c51 - issuechecker (1 year, 8 months ago)&lt;ping&gt;
-......</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git remote -v
-blog    https://github.com/pinggit/pinggit.github.com (fetch)
-blog    https://github.com/pinggit/pinggit.github.com (push)</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>and "force push" to github</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git push blog master
-Username for 'https://github.com': pinggit
-Password for 'https://pinggit@github.com':
-To https://github.com/pinggit/pinggit.github.com
- ! [rejected]        master -&gt; master (non-fast-forward)
-error: failed to push some refs to 'https://github.com/pinggit/pinggit.github.com'
-hint: Updates were rejected because the tip of your current branch is behind
-hint: its remote counterpart. Integrate the remote changes (e.g.
-hint: 'git pull ...') before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>ping@ubuntu1404:~/pinggit$ git push -f blog master
-Total 0 (delta 0), reused 0 (delta 0)
-To https://github.com/pinggit/pinggit.github.com
- + c87df22...76286e7 master -&gt; master (forced update)</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_basics"><a class="anchor" href="#_basics"></a>2. basics</h2>
+<h2 id="_basics"><a class="anchor" href="#_basics"></a>1. basics</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>go back to last version</p>
@@ -1203,7 +1014,7 @@ d452688 HEAD@{4}: commit (initial): wrote a readme file</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_git_working_dir_stage_index_master_head"><a class="anchor" href="#_git_working_dir_stage_index_master_head"></a>3. git working dir, stage(index), master, head:</h2>
+<h2 id="_git_working_dir_stage_index_master_head"><a class="anchor" href="#_git_working_dir_stage_index_master_head"></a>2. git working dir, stage(index), master, head:</h2>
 <div class="sectionbody">
 <div class="literalblock">
 <div class="content">
@@ -1232,7 +1043,7 @@ d452688 HEAD@{4}: commit (initial): wrote a readme file</pre>
 <p>prepare for the commit</p>
 </div>
 <div class="sect2">
-<h3 id="_chart_basic_term_working_dir_staged_index_repository_master"><a class="anchor" href="#_chart_basic_term_working_dir_staged_index_repository_master"></a>3.1. chart: basic term (working dir, staged/index, repository/master)</h3>
+<h3 id="_chart_basic_term_working_dir_staged_index_repository_master"><a class="anchor" href="#_chart_basic_term_working_dir_staged_index_repository_master"></a>2.1. chart: basic term (working dir, staged/index, repository/master)</h3>
 <div class="literalblock">
 <div class="content">
 <pre>working dir           staged/indexed area              repository
@@ -1296,7 +1107,7 @@ rm file.txt
 </div>
 </div>
 <div class="sect1">
-<h2 id="_chart_branch"><a class="anchor" href="#_chart_branch"></a>4. chart: branch</h2>
+<h2 id="_chart_branch"><a class="anchor" href="#_chart_branch"></a>3. chart: branch</h2>
 <div class="sectionbody">
 <div class="literalblock">
 <div class="content">
@@ -1411,10 +1222,10 @@ a --------&gt; b ------------&gt; c      commit3
 </div>
 </div>
 <div class="sect1">
-<h2 id="_merge"><a class="anchor" href="#_merge"></a>5. merge</h2>
+<h2 id="_merge"><a class="anchor" href="#_merge"></a>4. merge</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_fast_forward"><a class="anchor" href="#_fast_forward"></a>5.1. fast forward</h3>
+<h3 id="_fast_forward"><a class="anchor" href="#_fast_forward"></a>4.1. fast forward</h3>
 <div class="literalblock">
 <div class="title">merge dev into master</div>
 <div class="content">
@@ -1473,7 +1284,7 @@ ever), use -D</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_confliction"><a class="anchor" href="#_confliction"></a>5.2. confliction</h3>
+<h3 id="_confliction"><a class="anchor" href="#_confliction"></a>4.2. confliction</h3>
 <div class="literalblock">
 <div class="title">create and switch to a new branch</div>
 <div class="content">
@@ -1699,7 +1510,7 @@ ping@ubuntu1404:~/learngit$ git branch
 </div>
 </div>
 <div class="sect2">
-<h3 id="__no_ff_disable_ff"><a class="anchor" href="#__no_ff_disable_ff"></a>5.3. --no-ff: disable ff</h3>
+<h3 id="__no_ff_disable_ff"><a class="anchor" href="#__no_ff_disable_ff"></a>4.3. --no-ff: disable ff</h3>
 <div class="paragraph">
 <p>this will generate a new commit when merge. better history record.</p>
 </div>
@@ -1857,7 +1668,7 @@ back to dev when work done,
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_way_merge"><a class="anchor" href="#_3_way_merge"></a>5.4. 3-way merge</h3>
+<h3 id="_3_way_merge"><a class="anchor" href="#_3_way_merge"></a>4.4. 3-way merge</h3>
 <div class="paragraph">
 <p>also called a "3-way merge":</p>
 </div>
@@ -2040,7 +1851,7 @@ crazy and new branch crazy-alt - they are with the same commit.</td>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_stash"><a class="anchor" href="#_stash"></a>6. stash</h2>
+<h2 id="_stash"><a class="anchor" href="#_stash"></a>5. stash</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -2369,8 +2180,13 @@ ping@ubuntu1404:~/learngit$ git commit -m "add hello.py and change readme.txt"
 </li>
 </ol>
 </div>
-<div class="exampleblock">
-<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>to apply a specific stash:</p>
 </div>
@@ -2395,12 +2211,14 @@ ping@ubuntu1404:~/learngit$ git commit -m "add hello.py and change readme.txt"
 <pre>git stash drop</pre>
 </div>
 </div>
-</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_remote"><a class="anchor" href="#_remote"></a>7. remote</h2>
+<h2 id="_remote"><a class="anchor" href="#_remote"></a>6. remote</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -2410,7 +2228,7 @@ ping@ubuntu1404:~/learngit$ git commit -m "add hello.py and change readme.txt"
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_local_fs"><a class="anchor" href="#_local_fs"></a>7.1. local FS</h3>
+<h3 id="_local_fs"><a class="anchor" href="#_local_fs"></a>6.1. local FS</h3>
 <div class="paragraph">
 <p>create a clone</p>
 </div>
@@ -2426,7 +2244,7 @@ drwxrwxr-x 4 ping ping  4096 Jan 20 23:59 my-git-repo</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="__local_config"><a class="anchor" href="#__local_config"></a>7.1.1. "local" config:</h4>
+<h4 id="__local_config"><a class="anchor" href="#__local_config"></a>6.1.1. "local" config:</h4>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/Dropbox/git/marys-repo$ git config user.name "Mary"
@@ -2522,7 +2340,7 @@ Date:   Sat Jan 21 00:12:30 2017 -0500</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_add_remote"><a class="anchor" href="#_add_remote"></a>7.1.2. add remote</h4>
+<h4 id="_add_remote"><a class="anchor" href="#_add_remote"></a>6.1.2. add remote</h4>
 <div class="paragraph">
 <p>git-remote - Manage set of tracked repositories</p>
 </div>
@@ -2569,7 +2387,7 @@ mary    ../marys-repo/ (push)</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="__fetch_remote_branches_in"><a class="anchor" href="#__fetch_remote_branches_in"></a>7.1.3. 'fetch' remote branches in</h4>
+<h4 id="__fetch_remote_branches_in"><a class="anchor" href="#__fetch_remote_branches_in"></a>6.1.3. 'fetch' remote branches in</h4>
 <div class="paragraph">
 <p>git-fetch - Download objects and refs from another repository</p>
 </div>
@@ -2688,7 +2506,7 @@ ping@ubuntu1404:~/Dropbox/git/my-git-repo$</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_merge_a_remote_branch_in"><a class="anchor" href="#_merge_a_remote_branch_in"></a>7.1.4. merge a remote branch in</h4>
+<h4 id="_merge_a_remote_branch_in"><a class="anchor" href="#_merge_a_remote_branch_in"></a>6.1.4. merge a remote branch in</h4>
 <div class="paragraph">
 <p>now go to master branch and merge a remote branch in</p>
 </div>
@@ -2757,7 +2575,7 @@ Fast-forward
 </div>
 </div>
 <div class="sect3">
-<h4 id="__push_to_a_remote_repo"><a class="anchor" href="#__push_to_a_remote_repo"></a>7.1.5. 'push' to a remote repo</h4>
+<h4 id="__push_to_a_remote_repo"><a class="anchor" href="#__push_to_a_remote_repo"></a>6.1.5. 'push' to a remote repo</h4>
 <div class="paragraph">
 <p>git-push - Update remote refs along with associated objects</p>
 </div>
@@ -2807,7 +2625,7 @@ never push into other people&#8217;s repo!
 </div>
 </div>
 <div class="sect3">
-<h4 id="_push_a_local_tag"><a class="anchor" href="#_push_a_local_tag"></a>7.1.6. push a local tag</h4>
+<h4 id="_push_a_local_tag"><a class="anchor" href="#_push_a_local_tag"></a>6.1.6. push a local tag</h4>
 <div class="paragraph">
 <p>a local tag won&#8217;t be automatically pushed associated with a branch</p>
 </div>
@@ -2886,7 +2704,7 @@ v2.0</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_github"><a class="anchor" href="#_github"></a>7.2. github</h3>
+<h3 id="_github"><a class="anchor" href="#_github"></a>6.2. github</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -3286,7 +3104,7 @@ To https://github.com/pinggit/learngit.git
 </div>
 </div>
 <div class="sect1">
-<h2 id="_centralized_workflow"><a class="anchor" href="#_centralized_workflow"></a>8. centralized workflow</h2>
+<h2 id="_centralized_workflow"><a class="anchor" href="#_centralized_workflow"></a>7. centralized workflow</h2>
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
@@ -3294,7 +3112,7 @@ To https://github.com/pinggit/learngit.git
 </div>
 </div>
 <div class="sect2">
-<h3 id="_create_the_central_hub_repo"><a class="anchor" href="#_create_the_central_hub_repo"></a>8.1. create the central/hub repo</h3>
+<h3 id="_create_the_central_hub_repo"><a class="anchor" href="#_create_the_central_hub_repo"></a>7.1. create the central/hub repo</h3>
 <div class="paragraph">
 <p>create an empty (bare) repo named "central-repo" in github</p>
 </div>
@@ -3357,7 +3175,7 @@ orange.html  rainbow.html  red.html  style.css  yellow.html</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de1_push_change1"><a class="anchor" href="#_de1_push_change1"></a>8.2. DE1: push change1</h3>
+<h3 id="_de1_push_change1"><a class="anchor" href="#_de1_push_change1"></a>7.2. DE1: push change1</h3>
 <div class="paragraph">
 <p>create and commit some local changes</p>
 </div>
@@ -3461,7 +3279,7 @@ To https://github.com/pinggit/central-repo.git
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de2_push_change2"><a class="anchor" href="#_de2_push_change2"></a>8.3. DE2: push change2</h3>
+<h3 id="_de2_push_change2"><a class="anchor" href="#_de2_push_change2"></a>7.3. DE2: push change2</h3>
 <div class="paragraph">
 <p>another DE now commit a change</p>
 </div>
@@ -3539,7 +3357,7 @@ need to figure out what changes need to be rebased.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de2_push_got_rejected"><a class="anchor" href="#_de2_push_got_rejected"></a>8.4. DE2: push got rejected</h3>
+<h3 id="_de2_push_got_rejected"><a class="anchor" href="#_de2_push_got_rejected"></a>7.4. DE2: push got rejected</h3>
 <div class="paragraph">
 <p>now publish/push to central repo will get rejected:</p>
 </div>
@@ -3562,7 +3380,7 @@ yet), fetch remote repo, then 'git log a..b' to compare the work.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de2_rebase_and_then_push"><a class="anchor" href="#_de2_rebase_and_then_push"></a>8.5. DE2: rebase and then push</h3>
+<h3 id="_de2_rebase_and_then_push"><a class="anchor" href="#_de2_rebase_and_then_push"></a>7.5. DE2: rebase and then push</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/marys-repo$ git rebase origin/master
@@ -3623,7 +3441,7 @@ To https://github.com/pinggit/central-repo.git
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de1_fetch"><a class="anchor" href="#_de1_fetch"></a>8.6. DE1: fetch</h3>
+<h3 id="_de1_fetch"><a class="anchor" href="#_de1_fetch"></a>7.6. DE1: fetch</h3>
 <div class="paragraph">
 <p>DE1 now can fetch all of the remote branches</p>
 </div>
@@ -3675,7 +3493,7 @@ nothing to commit, working tree clean</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de1_check_what_is_new_in_the_remote_branch"><a class="anchor" href="#_de1_check_what_is_new_in_the_remote_branch"></a>8.7. DE1: check what is new in the remote branch:</h3>
+<h3 id="_de1_check_what_is_new_in_the_remote_branch"><a class="anchor" href="#_de1_check_what_is_new_in_the_remote_branch"></a>7.7. DE1: check what is new in the remote branch:</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/my-git-repo$ git lg -3
@@ -3731,7 +3549,7 @@ in a:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de1_ff_merge_remote_branch_into_local"><a class="anchor" href="#_de1_ff_merge_remote_branch_into_local"></a>8.8. DE1: (ff) merge remote branch into local:</h3>
+<h3 id="_de1_ff_merge_remote_branch_into_local"><a class="anchor" href="#_de1_ff_merge_remote_branch_into_local"></a>7.8. DE1: (ff) merge remote branch into local:</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/my-git-repo$ git merge origin/master
@@ -3753,7 +3571,7 @@ Fast-forward
 </div>
 </div>
 <div class="sect1">
-<h2 id="_distributed_workflow"><a class="anchor" href="#_distributed_workflow"></a>9. distributed workflow</h2>
+<h2 id="_distributed_workflow"><a class="anchor" href="#_distributed_workflow"></a>8. distributed workflow</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>assuming DE1 is the lead DE or maintainer of a project</p>
@@ -3804,7 +3622,7 @@ repository, while they all push to their own public repositories</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_patch_workflow"><a class="anchor" href="#_patch_workflow"></a>10. patch workflow</h2>
+<h2 id="_patch_workflow"><a class="anchor" href="#_patch_workflow"></a>9. patch workflow</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -3832,7 +3650,7 @@ repository, while they all push to their own public repositories</p>
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_de2_commit_some_changes"><a class="anchor" href="#_de2_commit_some_changes"></a>10.1. DE2 commit some changes</h3>
+<h3 id="_de2_commit_some_changes"><a class="anchor" href="#_de2_commit_some_changes"></a>9.1. DE2 commit some changes</h3>
 <div class="paragraph">
 <p>mary commit some new work (called work1) on a branch:</p>
 </div>
@@ -3916,7 +3734,7 @@ nothing to commit, working tree clean</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de2_generate_a_patch_for_the_new_work"><a class="anchor" href="#_de2_generate_a_patch_for_the_new_work"></a>10.2. DE2 generate a patch for the new work:</h3>
+<h3 id="_de2_generate_a_patch_for_the_new_work"><a class="anchor" href="#_de2_generate_a_patch_for_the_new_work"></a>9.2. DE2 generate a patch for the new work:</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/marys-repo$ git format-patch master
@@ -3986,7 +3804,7 @@ ping@ubuntu1404:~/marys-repo$ git cm -am "add a pink block of color"
 </div>
 </div>
 <div class="sect2">
-<h3 id="_patch_files"><a class="anchor" href="#_patch_files"></a>10.3. patch files</h3>
+<h3 id="_patch_files"><a class="anchor" href="#_patch_files"></a>9.3. patch files</h3>
 <div class="listingblock">
 <div class="title">patch for commit1</div>
 <div class="content">
@@ -4087,7 +3905,7 @@ index 11c50da..8824548 100644
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de2_send_patch_files_to_maintainer_de1"><a class="anchor" href="#_de2_send_patch_files_to_maintainer_de1"></a>10.4. DE2 send patch files to maintainer DE1</h3>
+<h3 id="_de2_send_patch_files_to_maintainer_de1"><a class="anchor" href="#_de2_send_patch_files_to_maintainer_de1"></a>9.4. DE2 send patch files to maintainer DE1</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/marys-repo$ ls -lct | head
@@ -4122,7 +3940,7 @@ drwxrwxr-x 2 ping ping 4096 Jan 21 00:37 about
 </div>
 </div>
 <div class="sect2">
-<h3 id="_maintainer_de1_apply_the_patch"><a class="anchor" href="#_maintainer_de1_apply_the_patch"></a>10.5. maintainer/DE1 apply the patch</h3>
+<h3 id="_maintainer_de1_apply_the_patch"><a class="anchor" href="#_maintainer_de1_apply_the_patch"></a>9.5. maintainer/DE1 apply the patch</h3>
 <div class="literalblock">
 <div class="title">DE1 create a new branch to apply the patch</div>
 <div class="content">
@@ -4328,7 +4146,7 @@ To https://github.com/pinggit/central-repo.git
 </div>
 </div>
 <div class="sect2">
-<h3 id="_de2_update_master_by_pull_changes_from_central_repo"><a class="anchor" href="#_de2_update_master_by_pull_changes_from_central_repo"></a>10.6. DE2 update master: by pull changes from central repo</h3>
+<h3 id="_de2_update_master_by_pull_changes_from_central_repo"><a class="anchor" href="#_de2_update_master_by_pull_changes_from_central_repo"></a>9.6. DE2 update master: by pull changes from central repo</h3>
 <div class="paragraph">
 <p>(instead of from local branch)</p>
 </div>
@@ -4501,14 +4319,18 @@ fe71224 HEAD@{5}: checkout: moving from master to pink-page <i class="conum" dat
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>&lt;3&gt; work on the topic branch</td>
+<td>work on the topic branch</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>generate patch, send to DE1, wait his merge and push</td>
+<td>work on the topic branch</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>generate patch, send to DE1, wait his merge and push</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>merge/rebase the update from the remote master of DE1&#8217;s central repo into
 local master</td>
 </tr>
@@ -4518,7 +4340,7 @@ local master</td>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_tag"><a class="anchor" href="#_tag"></a>11. tag</h2>
+<h2 id="_tag"><a class="anchor" href="#_tag"></a>10. tag</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>create a tag to a (latest commit of) current branch</p>
@@ -4915,7 +4737,7 @@ To https://github.com/pinggit/learngit.git
 </div>
 </div>
 <div class="sect1">
-<h2 id="_rebase"><a class="anchor" href="#_rebase"></a>12. rebase</h2>
+<h2 id="_rebase"><a class="anchor" href="#_rebase"></a>11. rebase</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -4931,7 +4753,7 @@ To https://github.com/pinggit/learngit.git
 </ul>
 </div>
 <div class="sect2">
-<h3 id="_rebase_for_merging_branch"><a class="anchor" href="#_rebase_for_merging_branch"></a>12.1. rebase for merging branch</h3>
+<h3 id="_rebase_for_merging_branch"><a class="anchor" href="#_rebase_for_merging_branch"></a>11.1. rebase for merging branch</h3>
 <div class="paragraph">
 <p>before branch of 'about':</p>
 </div>
@@ -5197,9 +5019,9 @@ us to integrate the most up-to-date version of master without a merge commit.</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="_rebase_for_merging_commit"><a class="anchor" href="#_rebase_for_merging_commit"></a>12.2. rebase for merging commit</h3>
+<h3 id="_rebase_for_merging_commit"><a class="anchor" href="#_rebase_for_merging_commit"></a>11.2. rebase for merging commit</h3>
 <div class="sect3">
-<h4 id="__squash"><a class="anchor" href="#__squash"></a>12.2.1. 'squash'</h4>
+<h4 id="__squash"><a class="anchor" href="#__squash"></a>11.2.1. 'squash'</h4>
 <div class="paragraph">
 <p>after rebasing "about" on top of "master", continue the work on "about"</p>
 </div>
@@ -5334,7 +5156,7 @@ default 'pick' command.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="__edit"><a class="anchor" href="#__edit"></a>12.2.2. 'edit'</h4>
+<h4 id="__edit"><a class="anchor" href="#__edit"></a>11.2.2. 'edit'</h4>
 <div class="paragraph">
 <p>if repeat the same rebase command again:</p>
 </div>
@@ -5575,7 +5397,7 @@ a53697e HEAD@{1}: commit (amend): add empty page mary.html &amp; add link to abo
 </div>
 </div>
 <div class="sect1">
-<h2 id="_changing_history"><a class="anchor" href="#_changing_history"></a>13. changing history</h2>
+<h2 id="_changing_history"><a class="anchor" href="#_changing_history"></a>12. changing history</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>before any changes:</p>
@@ -5603,7 +5425,7 @@ Switched to a new branch 'new-pages'</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_1st_changes"><a class="anchor" href="#_1st_changes"></a>13.1. 1st changes:</h3>
+<h3 id="_1st_changes"><a class="anchor" href="#_1st_changes"></a>12.1. 1st changes:</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/rewriting-history$ vim red.html
@@ -5657,7 +5479,7 @@ ping@ubuntu1404:~/rewriting-history$ git cm -m "add new html pages"
 </div>
 </div>
 <div class="sect2">
-<h3 id="_2nd_change"><a class="anchor" href="#_2nd_change"></a>13.2. 2nd change:</h3>
+<h3 id="_2nd_change"><a class="anchor" href="#_2nd_change"></a>12.2. 2nd change:</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/rewriting-history$ vim green.html
@@ -5718,7 +5540,7 @@ modified:   index.html</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_define_the_desired_commit_sequence"><a class="anchor" href="#_define_the_desired_commit_sequence"></a>13.3. define the desired commit sequence</h3>
+<h3 id="_define_the_desired_commit_sequence"><a class="anchor" href="#_define_the_desired_commit_sequence"></a>12.3. define the desired commit sequence</h3>
 <div class="paragraph">
 <p>so far the commit history looks:</p>
 </div>
@@ -5758,7 +5580,7 @@ the more nature commit flow:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_use_rebase_to_edit_first_commit"><a class="anchor" href="#_use_rebase_to_edit_first_commit"></a>13.4. use rebase to edit first commit</h3>
+<h3 id="_use_rebase_to_edit_first_commit"><a class="anchor" href="#_use_rebase_to_edit_first_commit"></a>12.4. use rebase to edit first commit</h3>
 <div class="paragraph">
 <p>so to 'rebase' all additional commits comparing to 'master':</p>
 </div>
@@ -5816,7 +5638,7 @@ master</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reset_mixed_head_1"><a class="anchor" href="#_reset_mixed_head_1"></a>13.5. reset --mixed HEAD~1</h3>
+<h3 id="_reset_mixed_head_1"><a class="anchor" href="#_reset_mixed_head_1"></a>12.5. reset --mixed HEAD~1</h3>
 <div class="paragraph">
 <p>this will reset the HEAD , AND staged area, even 1 more commit further - going
 back to the original commit before 1st new commit:</p>
@@ -5909,7 +5731,7 @@ ping@ubuntu1404:~/rewriting-history$</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_produce_the_desired_1st_commit"><a class="anchor" href="#_produce_the_desired_1st_commit"></a>13.6. produce the desired 1st commit</h3>
+<h3 id="_produce_the_desired_1st_commit"><a class="anchor" href="#_produce_the_desired_1st_commit"></a>12.6. produce the desired 1st commit</h3>
 <div class="paragraph">
 <p>now change/split the 1st change , and produce one meaningful "atom" commit:</p>
 </div>
@@ -6009,7 +5831,7 @@ commit - "edit 0a7e"</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_producing_the_desired_2nd_commit"><a class="anchor" href="#_producing_the_desired_2nd_commit"></a>13.7. producing the desired 2nd commit</h3>
+<h3 id="_producing_the_desired_2nd_commit"><a class="anchor" href="#_producing_the_desired_2nd_commit"></a>12.7. producing the desired 2nd commit</h3>
 <div class="paragraph">
 <p>repeat the above process, now group changes regarding "adding a yellow page",
 and produce a 2nd commit:</p>
@@ -6175,7 +5997,7 @@ You are currently editing a commit while rebasing branch 'new-pages' on '5fa9624
 </div>
 </div>
 <div class="sect2">
-<h3 id="_run_rebase_continue_to_finish_rebase"><a class="anchor" href="#_run_rebase_continue_to_finish_rebase"></a>13.8. run 'rebase --continue' to finish rebase</h3>
+<h3 id="_run_rebase_continue_to_finish_rebase"><a class="anchor" href="#_run_rebase_continue_to_finish_rebase"></a>12.8. run 'rebase --continue' to finish rebase</h3>
 <div class="paragraph">
 <p>to finish the rebase process, there are something left to finish:</p>
 </div>
@@ -6266,10 +6088,467 @@ master  (split1)  (split2) (new2)
 </ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_remove_last_commit"><a class="anchor" href="#_remove_last_commit"></a>12.9. remove last commit</h3>
+<div class="paragraph">
+<p>commit history:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg -3
+* 81d74e6 - (HEAD -&gt; new-pages) add green page (22 hours ago)&lt;ping&gt;     <i class="conum" data-value="1"></i><b>(1)</b>
+* c76ae68 - add yellow page (22 hours ago)&lt;ping&gt;                        <i class="conum" data-value="2"></i><b>(2)</b>
+* ccc8349 - add red page (22 hours ago)&lt;ping&gt;</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git ref -3
+81d74e6 HEAD@{0}: rebase -i (finish): returning to refs/heads/new-pages <i class="conum" data-value="1"></i><b>(1)</b>
+81d74e6 HEAD@{1}: rebase -i (pick): add green page
+c76ae68 HEAD@{2}: commit: add yellow page                               <i class="conum" data-value="2"></i><b>(2)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the last commit to be removed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the 2nd last commit (which the HEAD - tip of the branch, will be moved to)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>diagram:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>5fa9
+|    \
+v     --- ccc8 ---  c76a -- 81d7
+master
+                      |
+                      v
+                     HEAD/new-pages</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>after 'git reset --hard HEAD~1':</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git reset --hard HEAD~1
+HEAD is now at c76ae68 add yellow page</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>the last commit info got "lost" in log:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg -4
+* c76ae68 - (HEAD -&gt; new-pages) add yellow page (22 hours ago)&lt;ping&gt;    <i class="conum" data-value="1"></i><b>(1)</b>
+* ccc8349 - add red page (22 hours ago)&lt;ping&gt;
+* 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)&lt;Ryan&gt;
+* b490c20 - Begin creating bio pages (4 years, 1 month ago)&lt;Ryan&gt;</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the (previous) 2nd last commit now becomes the new HEAD, the previous last
+commit is "lost"</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>to find what happened in the past, and to retrieve the deleted commit ID, 'git
+reflog' will do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git ref -4
+c76ae68 HEAD@{0}: reset: moving to HEAD~1                               <i class="conum" data-value="1"></i><b>(1)</b>
+81d74e6 HEAD@{1}: rebase -i (finish): returning to refs/heads/new-pages <i class="conum" data-value="2"></i><b>(2)</b>
+81d74e6 HEAD@{2}: rebase -i (pick): add green page                      <i class="conum" data-value="2"></i><b>(2)</b>
+c76ae68 HEAD@{3}: commit: add yellow page                               <i class="conum" data-value="1"></i><b>(1)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>record about the (previous) 2nd last commit remains</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>record about the (previous) last commit remains</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>diagram:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>5fa9
+|    \
+v     --- ccc8 ---  c76a -- 81d7
+master
+                      |
+                      v
+                     HEAD/new-pages</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>so after 'git reset': the branch, along with HEAD, got <strong>moved</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>we won&#8217;t be in a "detached HEAD"</p>
+</li>
+<li>
+<p>the removed commit becomes a "dangling commit"</p>
+</li>
+<li>
+<p>"dangling commit": a commit that is NOT reachable from any branch</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_recover_the_lost_commit_detached_branch"><a class="anchor" href="#_recover_the_lost_commit_detached_branch"></a>12.10. recover the lost commit/detached branch</h3>
+<div class="paragraph">
+<p>directly checkout the lost commit will get into trouble:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git co 81d7
+Note: checking out '81d7'.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>git checkout -b &lt;new-branch-name&gt;</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>HEAD is now at 81d74e6... add green page</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git st
+HEAD detached at 81d74e6
+nothing to commit, working tree clean</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git br -a
+* (HEAD detached at 81d74e6)
+  master
+  new-pages
+ping@ubuntu1404:~/rewriting-history$</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>diagram:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>5fa9
+|    \
+v     --- ccc8 ---  c76a -- 81d7
+master                         \
+                      |         \
+                      v          v
+                  new-pages  (detached) HEAD</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg -4
+* 81d74e6 - (HEAD) add green page (23 hours ago)&lt;ping&gt;          <i class="conum" data-value="1"></i><b>(1)</b>
+* c76ae68 - (new-pages) add yellow page (23 hours ago)&lt;ping&gt;    <i class="conum" data-value="2"></i><b>(2)</b>
+* ccc8349 - add red page (23 hours ago)&lt;ping&gt;
+* 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)&lt;Ryan&gt;</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>this head, now becomes "detached" to existing branches</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the tip/tail of previous branch before check out</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>regarding a "branch":</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Git uses the <strong>tip</strong> of a branch to represent the entire branch.</p>
+</li>
+<li>
+<p>a branch is actually a <strong>pointer</strong> to a single commit — not a <strong>container</strong>
+for a series of commits.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://cloud.githubusercontent.com/assets/2038044/22360719/7461e7a0-e420-11e6-97d8-83ea3fcad846.png" alt="7461e7a0 e420 11e6 97d8 83ea3fcad846">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>to get out of this situation, just create a new branch for the dangling commit,
+as suggested by git.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git co -b green-page
+Switched to a new branch 'green-page'</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git br -a
+* green-page
+  master
+  new-pages</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg -4
+* 81d74e6 - (HEAD -&gt; green-page) add green page (23 hours ago)&lt;ping&gt;
+* c76ae68 - (new-pages) add yellow page (23 hours ago)&lt;ping&gt;
+* ccc8349 - add red page (23 hours ago)&lt;ping&gt;
+* 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)&lt;Ryan&gt;
+
+ping@ubuntu1404:~/rewriting-history$ git ref -4
+81d74e6 HEAD@{0}: checkout: moving from 81d74e637a92d4cccd77ac35171e48398e98f16d to green-page
+81d74e6 HEAD@{1}: checkout: moving from new-pages to 81d7
+c76ae68 HEAD@{2}: reset: moving to HEAD~1
+81d74e6 HEAD@{3}: rebase -i (finish): returning to refs/heads/new-pages</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>now the diagram becomes:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>5fa9
+|    \
+v     --- ccc8 ---  c76a -- 81d7
+master                         \
+                      |         \
+                      v          v
+                  new-pages  HEAD/green-page</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>so, the new branch is just one hop/commit away from the old branch 'new-pages'
+which it was branched off of.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg new-pages..green-page
+* 81d74e6 - (HEAD -&gt; green-page) add green page (23 hours ago)&lt;ping&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_merge_green_page_into_master"><a class="anchor" href="#_merge_green_page_into_master"></a>12.11. merge green-page into master</h3>
+<div class="paragraph">
+<p>to look at diff between 'master', and the newly created branch 'green-page':</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg master..green-page
+* 81d74e6 - (HEAD -&gt; green-page) add green page (23 hours ago)&lt;ping&gt;
+* c76ae68 - (new-pages) add yellow page (23 hours ago)&lt;ping&gt;
+* ccc8349 - add red page (23 hours ago)&lt;ping&gt;
+
+ping@ubuntu1404:~/rewriting-history$ git lg master..green-page --stat
+* 81d74e6 - (HEAD -&gt; green-page) add green page (23 hours ago)&lt;ping&gt;|
+|  green.html | 13 +++++++++++++
+|  index.html |  3 +++
+|  2 files changed, 16 insertions(+)
+
+* c76ae68 - (new-pages) add yellow page (23 hours ago)&lt;ping&gt;|
+|  index.html  |  3 +++
+|  yellow.html | 13 +++++++++++++
+|  2 files changed, 16 insertions(+)
+
+* ccc8349 - add red page (23 hours ago)&lt;ping&gt;
+   index.html |  5 +++++
+   red.html   | 13 +++++++++++++
+   2 files changed, 18 insertions(+)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to merge the updates into master, we could have just use merge:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>git co master
+git merge green-page</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>but we use another method here:</p>
+</div>
+<div class="paragraph">
+<p>to "fetch" update from source branch "green-page", into master, and doing it in
+"local" (indicated by an "."):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git fetch . green-page:master
+From .                                         ^    ^         ^
+   5fa9624..81d74e6  green-page -&gt; master  (local) (src br) (dest br)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>now updates in new/source branch (green-page) got merged into the old/dest
+branch (master):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg -5
+* 81d74e6 - (HEAD -&gt; green-page, master) add green page (23 hours ago)&lt;ping&gt;
+* c76ae68 - (new-pages) add yellow page (23 hours ago)&lt;ping&gt;
+* ccc8349 - add red page (23 hours ago)&lt;ping&gt;
+* 5fa9624 - Add link to about section in home page (4 years, 1 month ago)&lt;Ryan&gt;
+* b490c20 - Begin creating bio pages (4 years, 1 month ago)&lt;Ryan&gt;
+
+ping@ubuntu1404:~/rewriting-history$ git ref -5
+81d74e6 HEAD@{0}: checkout: moving from 81d74e637a92d4cccd77ac35171e48398e98f16d to green-page
+81d74e6 HEAD@{1}: checkout: moving from new-pages to 81d7
+c76ae68 HEAD@{2}: reset: moving to HEAD~1
+81d74e6 HEAD@{3}: rebase -i (finish): returning to refs/heads/new-pages
+81d74e6 HEAD@{4}: rebase -i (pick): add green page</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>the diagram becomes:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>5fa9
+     \
+      --- ccc8 ---  c76a -- 81d7
+                               \
+                                \
+                                 v
+                  new-pages  HEAD/green-page/master</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>now to clean up useless branches:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git br -d new-pages
+Deleted branch new-pages (was c76ae68).</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git br -d green-page
+error: Cannot delete branch 'green-page' checked out at '/home/ping/rewriting-history'</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git br
+* green-page
+  master</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git co master
+Switched to branch 'master'</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git br -d green-page
+Deleted branch green-page (was 81d74e6).</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>the final diagram looks:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ping@ubuntu1404:~/rewriting-history$ git lg -3
+* 81d74e6 - (HEAD -&gt; master) add green page (24 hours ago)&lt;ping&gt;
+* c76ae68 - add yellow page (24 hours ago)&lt;ping&gt;
+* ccc8349 - add red page (24 hours ago)&lt;ping&gt;
+ping@ubuntu1404:~/rewriting-history$
+ping@ubuntu1404:~/rewriting-history$ git ref -5
+81d74e6 HEAD@{0}: checkout: moving from green-page to master
+81d74e6 HEAD@{1}: checkout: moving from 81d74e637a92d4cccd77ac35171e48398e98f16d to green-page
+81d74e6 HEAD@{2}: checkout: moving from new-pages to 81d7
+c76ae68 HEAD@{3}: reset: moving to HEAD~1
+81d74e6 HEAD@{4}: rebase -i (finish): returning to refs/heads/new-pages</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>5fa9
+     \
+      --- ccc8 ---  c76a -- 81d7
+                               \
+                                \
+                                 v
+                             HEAD/master</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_patching"><a class="anchor" href="#_patching"></a>14. patching</h2>
+<h2 id="_patching"><a class="anchor" href="#_patching"></a>13. patching</h2>
 <div class="sectionbody">
 <div class="literalblock">
 <div class="content">
@@ -6304,15 +6583,24 @@ master  (split1)  (split2) (new2)
 </div>
 </div>
 <div class="sect1">
-<h2 id="_command_reference"><a class="anchor" href="#_command_reference"></a>15. command reference</h2>
+<h2 id="_command_reference"><a class="anchor" href="#_command_reference"></a>14. command reference</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_git_log"><a class="anchor" href="#_git_log"></a>15.1. git log</h3>
+<h3 id="_git_log"><a class="anchor" href="#_git_log"></a>14.1. git log</h3>
 <div class="paragraph">
 <p>display committed (not "staged") changes history.</p>
 </div>
-<div class="paragraph">
-<p>TIPS: use 'git status' to display changes that is staged but before commited.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+use 'git status' to display changes that is staged but before commited.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>some most useful forms:</p>
@@ -6374,8 +6662,13 @@ ad9a8eb add coding: utf-8
 <img src="https://cloud.githubusercontent.com/assets/2038044/22172469/a33a7f6a-df75-11e6-954c-78e58abb2015.png" alt="a33a7f6a df75 11e6 954c 78e58abb2015">
 </div>
 </div>
-<div class="exampleblock">
-<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>pretty log display:</p>
 </div>
@@ -6419,11 +6712,13 @@ ad9a8eb add coding: utf-8
 <div class="paragraph">
 <p>so a 'git lg' will suffice.</p>
 </div>
-</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_config"><a class="anchor" href="#_git_config"></a>15.2. git config</h3>
+<h3 id="_git_config"><a class="anchor" href="#_git_config"></a>14.2. git config</h3>
 <div class="paragraph">
 <div class="title">global config</div>
 <p>'git config --global CMD' will generate a "global" config file: ~/.gitconfig</p>
@@ -6465,7 +6760,7 @@ ad9a8eb add coding: utf-8
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_clean"><a class="anchor" href="#_git_clean"></a>15.3. git clean</h3>
+<h3 id="_git_clean"><a class="anchor" href="#_git_clean"></a>14.3. git clean</h3>
 <div class="paragraph">
 <p>git-clean - Remove untracked files from the working tree</p>
 </div>
@@ -6525,9 +6820,9 @@ Your branch is up-to-date with 'origin/dev'.</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_checkout"><a class="anchor" href="#_git_checkout"></a>15.4. git checkout</h3>
+<h3 id="_git_checkout"><a class="anchor" href="#_git_checkout"></a>14.4. git checkout</h3>
 <div class="sect3">
-<h4 id="_checkout_commit"><a class="anchor" href="#_checkout_commit"></a>15.4.1. checkout &lt;COMMIT&gt;</h4>
+<h4 id="_checkout_commit"><a class="anchor" href="#_checkout_commit"></a>14.4.1. checkout &lt;COMMIT&gt;</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -6550,7 +6845,7 @@ Your branch is up-to-date with 'origin/dev'.</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_checkout_commit_file"><a class="anchor" href="#_checkout_commit_file"></a>15.4.2. checkout &lt;COMMIT&gt; &lt;FILE&gt;</h4>
+<h4 id="_checkout_commit_file"><a class="anchor" href="#_checkout_commit_file"></a>14.4.2. checkout &lt;COMMIT&gt; &lt;FILE&gt;</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -6569,7 +6864,7 @@ Your branch is up-to-date with 'origin/dev'.</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_reset"><a class="anchor" href="#_git_reset"></a>15.5. git reset</h3>
+<h3 id="_git_reset"><a class="anchor" href="#_git_reset"></a>14.5. git reset</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -6591,7 +6886,7 @@ Your branch is up-to-date with 'origin/dev'.</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reset_commit"><a class="anchor" href="#_reset_commit"></a>15.5.1. reset &lt;COMMIT&gt;</h4>
+<h4 id="_reset_commit"><a class="anchor" href="#_reset_commit"></a>14.5.1. reset &lt;COMMIT&gt;</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -6796,7 +7091,7 @@ the time of &lt;COMMIT&gt;</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reset_commit_file"><a class="anchor" href="#_reset_commit_file"></a>15.5.2. reset &lt;COMMIT&gt; &lt;FILE&gt;</h4>
+<h4 id="_reset_commit_file"><a class="anchor" href="#_reset_commit_file"></a>14.5.2. reset &lt;COMMIT&gt; &lt;FILE&gt;</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -6941,12 +7236,12 @@ HEAD is now at 1d2a2ea add a pink block of color</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="__git_reset_head_2_foo_py"><a class="anchor" href="#__git_reset_head_2_foo_py"></a>15.5.3. 'git reset HEAD~2 foo.py'</h4>
+<h4 id="__git_reset_head_2_foo_py"><a class="anchor" href="#__git_reset_head_2_foo_py"></a>14.5.3. 'git reset HEAD~2 foo.py'</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_revert"><a class="anchor" href="#_git_revert"></a>15.6. git revert</h3>
+<h3 id="_git_revert"><a class="anchor" href="#_git_revert"></a>14.6. git revert</h3>
 <div class="imageblock">
 <div class="content">
 <img src="https://cloud.githubusercontent.com/assets/2038044/22316385/dbe492ce-e33a-11e6-8e6c-288e3901fcc6.png" alt="dbe492ce e33a 11e6 8e6c 288e3901fcc6">
@@ -7043,7 +7338,7 @@ nothing to commit, working tree clean</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_bare_repo"><a class="anchor" href="#_bare_repo"></a>15.7. bare repo</h3>
+<h3 id="_bare_repo"><a class="anchor" href="#_bare_repo"></a>14.7. bare repo</h3>
 <div class="literalblock">
 <div class="content">
 <pre>git init --bare dir</pre>
@@ -7057,7 +7352,7 @@ nothing to commit, working tree clean</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_branch"><a class="anchor" href="#_git_branch"></a>15.8. git branch</h3>
+<h3 id="_git_branch"><a class="anchor" href="#_git_branch"></a>14.8. git branch</h3>
 <div class="paragraph">
 <p>to remove a remote branch</p>
 </div>
@@ -7076,7 +7371,7 @@ nothing to commit, working tree clean</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_archive"><a class="anchor" href="#_git_archive"></a>15.9. git archive</h3>
+<h3 id="_git_archive"><a class="anchor" href="#_git_archive"></a>14.9. git archive</h3>
 <div class="literalblock">
 <div class="content">
 <pre>ping@ubuntu1404:~/my-git-repo$ git archive master --format=tar --output=../my-git-repo.master.tar
@@ -7113,7 +7408,7 @@ yellow.html</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_bunble"><a class="anchor" href="#_git_bunble"></a>15.10. git bunble</h3>
+<h3 id="_git_bunble"><a class="anchor" href="#_git_bunble"></a>14.10. git bunble</h3>
 <div class="paragraph">
 <p>create a bundle for a repo</p>
 </div>
@@ -7264,7 +7559,7 @@ ping@ubuntu1404:~/my-git-repo$ git br -a
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_head_path_notation_sup_sup_n_n"><a class="anchor" href="#_git_head_path_notation_sup_sup_n_n"></a>15.11. git HEAD path notation: '<sup>[</sup>*]N' , '~N'</h3>
+<h3 id="_git_head_path_notation_sup_sup_n_n"><a class="anchor" href="#_git_head_path_notation_sup_sup_n_n"></a>14.11. git HEAD path notation: '<sup>[</sup>*]N' , '~N'</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -7319,7 +7614,7 @@ J = F^2  = B^3^2   = A^^3^2</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_diff"><a class="anchor" href="#_git_diff"></a>15.12. git diff</h3>
+<h3 id="_git_diff"><a class="anchor" href="#_git_diff"></a>14.12. git diff</h3>
 <div class="paragraph">
 <p>current status and change history:</p>
 </div>
@@ -7387,19 +7682,19 @@ nothing to commit, working tree clean</pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="__git_diff"><a class="anchor" href="#__git_diff"></a>15.12.1. 'git diff'</h4>
+<h4 id="__git_diff"><a class="anchor" href="#__git_diff"></a>14.12.1. 'git diff'</h4>
 
 </div>
 <div class="sect3">
-<h4 id="__git_diff_cache"><a class="anchor" href="#__git_diff_cache"></a>15.12.2. 'git diff -cache'</h4>
+<h4 id="__git_diff_cache"><a class="anchor" href="#__git_diff_cache"></a>14.12.2. 'git diff -cache'</h4>
 
 </div>
 <div class="sect3">
-<h4 id="__git_diff_head"><a class="anchor" href="#__git_diff_head"></a>15.12.3. 'git diff HEAD'</h4>
+<h4 id="__git_diff_head"><a class="anchor" href="#__git_diff_head"></a>14.12.3. 'git diff HEAD'</h4>
 
 </div>
 <div class="sect3">
-<h4 id="__git_diff_head_head_1"><a class="anchor" href="#__git_diff_head_head_1"></a>15.12.4. 'git diff HEAD..HEAD~1'</h4>
+<h4 id="__git_diff_head_head_1"><a class="anchor" href="#__git_diff_head_head_1"></a>14.12.4. 'git diff HEAD..HEAD~1'</h4>
 <div class="paragraph">
 <p>diff between current committed version and previous commit in the repo:</p>
 </div>
@@ -7432,7 +7727,7 @@ index 8824548..11c50da 100644       #&lt;------file index
 </div>
 </div>
 <div class="sect3">
-<h4 id="_git_show"><a class="anchor" href="#_git_show"></a>15.12.5. git show</h4>
+<h4 id="_git_show"><a class="anchor" href="#_git_show"></a>14.12.5. git show</h4>
 <div class="paragraph">
 <p>we can then use 'git show &lt;file index&gt;' to check the file(s) in comparison -
 the 'file index' is shown in the 'git diff' output - what the file(s) looks
@@ -7542,22 +7837,28 @@ ping@ubuntu1404:~/my-git-repo$</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_rebase"><a class="anchor" href="#_git_rebase"></a>15.13. git rebase</h3>
+<h3 id="_git_rebase"><a class="anchor" href="#_git_rebase"></a>14.13. git rebase</h3>
 
+</div>
+<div class="sect2">
+<h3 id="_git_fetch"><a class="anchor" href="#_git_fetch"></a>14.14. git fetch</h3>
+<div class="paragraph">
+<p>git-fetch - Download objects and refs from another repository</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_misc"><a class="anchor" href="#_misc"></a>16. misc</h2>
+<h2 id="_misc"><a class="anchor" href="#_misc"></a>15. misc</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_gitignore"><a class="anchor" href="#_gitignore"></a>16.1. gitignore</h3>
+<h3 id="_gitignore"><a class="anchor" href="#_gitignore"></a>15.1. gitignore</h3>
 <div class="paragraph">
 <p><a href="https://github.com/github/gitignore" class="bare">https://github.com/github/gitignore</a></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_alias"><a class="anchor" href="#_alias"></a>16.2. alias</h3>
+<h3 id="_alias"><a class="anchor" href="#_alias"></a>15.2. alias</h3>
 <div class="literalblock">
 <div class="content">
 <pre>git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)&lt;%an&gt;%Creset' --abbrev-commit"</pre>
@@ -7598,22 +7899,22 @@ ping@ubuntu1404:~/my-git-repo$</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_gui_clients"><a class="anchor" href="#_gui_clients"></a>16.3. gui clients</h3>
+<h3 id="_gui_clients"><a class="anchor" href="#_gui_clients"></a>15.3. gui clients</h3>
 <div class="sect3">
-<h4 id="_github_desktop"><a class="anchor" href="#_github_desktop"></a>16.3.1. github desktop</h4>
+<h4 id="_github_desktop"><a class="anchor" href="#_github_desktop"></a>15.3.1. github desktop</h4>
 
 </div>
 <div class="sect3">
-<h4 id="_smartgit"><a class="anchor" href="#_smartgit"></a>16.3.2. smartgit</h4>
+<h4 id="_smartgit"><a class="anchor" href="#_smartgit"></a>15.3.2. smartgit</h4>
 
 </div>
 <div class="sect3">
-<h4 id="_tower"><a class="anchor" href="#_tower"></a>16.3.3. tower</h4>
+<h4 id="_tower"><a class="anchor" href="#_tower"></a>15.3.3. tower</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="__detached_head"><a class="anchor" href="#__detached_head"></a>16.4. 'detached HEAD'</h3>
+<h3 id="__detached_head"><a class="anchor" href="#__detached_head"></a>15.4. 'detached HEAD'</h3>
 <div class="ulist">
 <div class="title">great doc:</div>
 <ul>
@@ -7718,7 +8019,7 @@ d452688 HEAD@{0}: checkout: moving from dev to d452
 </div>
 </div>
 <div class="sect3">
-<h4 id="_finally_commit_and_switch_back"><a class="anchor" href="#_finally_commit_and_switch_back"></a>16.4.1. finally commit and switch back:</h4>
+<h4 id="_finally_commit_and_switch_back"><a class="anchor" href="#_finally_commit_and_switch_back"></a>15.4.1. finally commit and switch back:</h4>
 <div class="paragraph">
 <p>commit:</p>
 </div>
@@ -7807,7 +8108,7 @@ d452688 HEAD@{2}: checkout: moving from dev to d452         #&lt;------
 </div>
 </div>
 <div class="sect3">
-<h4 id="_solution"><a class="anchor" href="#_solution"></a>16.4.2. solution</h4>
+<h4 id="_solution"><a class="anchor" href="#_solution"></a>15.4.2. solution</h4>
 <div class="literalblock">
 <div class="content">
 <pre>$ git checkout -b test-branch 56a4e5c08</pre>
@@ -7827,16 +8128,16 @@ $ git branch -d test-branch</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_git_hooks"><a class="anchor" href="#_git_hooks"></a>16.5. git hooks</h3>
+<h3 id="_git_hooks"><a class="anchor" href="#_git_hooks"></a>15.5. git hooks</h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_import_rules"><a class="anchor" href="#_import_rules"></a>17. import rules</h2>
+<h2 id="_import_rules"><a class="anchor" href="#_import_rules"></a>16. import rules</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_never_rebase_commits_that_have_been_pushed_to_a_shared_repo"><a class="anchor" href="#_never_rebase_commits_that_have_been_pushed_to_a_shared_repo"></a>17.1. never rebase commits that have been pushed to a shared repo</h3>
+<h3 id="_never_rebase_commits_that_have_been_pushed_to_a_shared_repo"><a class="anchor" href="#_never_rebase_commits_that_have_been_pushed_to_a_shared_repo"></a>16.1. never rebase commits that have been pushed to a shared repo</h3>
 <div class="paragraph">
 <p>suppose:
 * you made 2 commits, then published/pushed to central remote
@@ -7885,15 +8186,16 @@ mess the flow and will confuse other DEs.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_common_issues"><a class="anchor" href="#_common_issues"></a>18. common issues</h2>
+<h2 id="_common_issues"><a class="anchor" href="#_common_issues"></a>17. common issues</h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_full_chart"><a class="anchor" href="#_full_chart"></a>19. full chart</h2>
+<h2 id="_full_chart"><a class="anchor" href="#_full_chart"></a>18. full chart</h2>
 <div class="sectionbody">
 <div class="literalblock">
+<div class="title">a chart about git common operations</div>
 <div class="content">
 <pre>working dir           staged/indexed area              repository
                           (snapshot)                committed snapshot</pre>
@@ -7952,6 +8254,12 @@ rm file.txt
                                   ---------&gt;  vx (HEAD)
                                   commit (the rm)</pre>
 </div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://cloud.githubusercontent.com/assets/2038044/22360092/c5dd2352-e41a-11e6-8a72-1aeb62253627.png" alt="c5dd2352 e41a 11e6 8a72 1aeb62253627">
+</div>
+<div class="title">Figure 1. git fetch/clone/push/pull/checkout/etc:</div>
 </div>
 </div>
 </div>

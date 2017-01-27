@@ -69,6 +69,9 @@
 :max-width: 150em
 
 :bookreading!:
+:pendingissue!:
+
+ifdef::pendingissue[]
 
 == pending issue
 
@@ -205,6 +208,8 @@ and "force push" to github
     Total 0 (delta 0), reused 0 (delta 0)
     To https://github.com/pinggit/pinggit.github.com
      + c87df22...76286e7 master -> master (forced update)
+
+endif::pendingissue[]
 
 ifdef::bookreading[]
 
@@ -1030,7 +1035,7 @@ now add the 2 changes at one go with 'git add -A .' and commit:
 . change to existing (tracked) file
 
 
-[TIPS]
+[TIP]
 ====
 to apply a specific stash:
 
@@ -2388,7 +2393,8 @@ fe71224 HEAD@{5}: checkout: moving from master to pink-page <1>
 ----
 
 <1> branch off from master with a topic branch
-<2> <3> work on the topic branch
+<2> work on the topic branch
+<3> work on the topic branch
 <4> generate patch, send to DE1, wait his merge and push
 <5> merge/rebase the update from the remote master of DE1's central repo into
 local master
@@ -3536,6 +3542,310 @@ commit diagram:
 * old1 -> split1 + split2
 * old2 -> new2
 
+=== remove last commit
+
+commit history:
+
+----
+ping@ubuntu1404:~/rewriting-history$ git lg -3
+* 81d74e6 - (HEAD -> new-pages) add green page (22 hours ago)<ping>     <1>
+* c76ae68 - add yellow page (22 hours ago)<ping>                        <2>
+* ccc8349 - add red page (22 hours ago)<ping>
+----
+
+----
+ping@ubuntu1404:~/rewriting-history$ git ref -3
+81d74e6 HEAD@{0}: rebase -i (finish): returning to refs/heads/new-pages <1>
+81d74e6 HEAD@{1}: rebase -i (pick): add green page
+c76ae68 HEAD@{2}: commit: add yellow page                               <2>
+----
+
+<1> the last commit to be removed
+<2> the 2nd last commit (which the HEAD - tip of the branch, will be moved to)
+
+
+diagram:
+
+    5fa9             
+    |    \
+    v     --- ccc8 ---  c76a -- 81d7
+    master 
+                          |
+                          v
+                         HEAD/new-pages
+
+
+after 'git reset --hard HEAD~1':
+
+    ping@ubuntu1404:~/rewriting-history$ git reset --hard HEAD~1
+    HEAD is now at c76ae68 add yellow page
+
+the last commit info got "lost" in log:
+
+----
+ping@ubuntu1404:~/rewriting-history$ git lg -4
+* c76ae68 - (HEAD -> new-pages) add yellow page (22 hours ago)<ping>    <1>
+* ccc8349 - add red page (22 hours ago)<ping>
+* 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)<Ryan>
+* b490c20 - Begin creating bio pages (4 years, 1 month ago)<Ryan>
+----
+
+<1> the (previous) 2nd last commit now becomes the new HEAD, the previous last
+commit is "lost"
+
+to find what happened in the past, and to retrieve the deleted commit ID, 'git
+reflog' will do:
+
+----
+ping@ubuntu1404:~/rewriting-history$ git ref -4
+c76ae68 HEAD@{0}: reset: moving to HEAD~1                               <1>
+81d74e6 HEAD@{1}: rebase -i (finish): returning to refs/heads/new-pages <2>
+81d74e6 HEAD@{2}: rebase -i (pick): add green page                      <2>
+c76ae68 HEAD@{3}: commit: add yellow page                               <1>
+----
+
+<1> record about the (previous) 2nd last commit remains
+<2> record about the (previous) last commit remains
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    On branch new-pages
+    nothing to commit, working tree clean
+    ping@ubuntu1404:~/rewriting-history$
+
+diagram:
+
+                      
+    5fa9             
+    |    \
+    v     --- ccc8 ---  c76a -- 81d7
+    master 
+                          |
+                          v
+                         HEAD/new-pages
+
+so after 'git reset': the branch, along with HEAD, got **moved**:
+
+* we won't be in a "detached HEAD"
+* the removed commit becomes a "dangling commit"
+* "dangling commit": a commit that is NOT reachable from any branch
+
+=== recover the lost commit/detached branch
+
+directly checkout the lost commit will get into trouble:
+
+    ping@ubuntu1404:~/rewriting-history$ git co 81d7
+    Note: checking out '81d7'.
+
+    You are in 'detached HEAD' state. You can look around, make experimental
+    changes and commit them, and you can discard any commits you make in this
+    state without impacting any branches by performing another checkout.
+
+    If you want to create a new branch to retain commits you create, you may
+    do so (now or later) by using -b with the checkout command again. Example:
+
+      git checkout -b <new-branch-name>
+
+    HEAD is now at 81d74e6... add green page
+
+    ping@ubuntu1404:~/rewriting-history$ git st
+    HEAD detached at 81d74e6
+    nothing to commit, working tree clean
+
+    ping@ubuntu1404:~/rewriting-history$ git br -a
+    * (HEAD detached at 81d74e6)
+      master
+      new-pages
+    ping@ubuntu1404:~/rewriting-history$
+
+diagram:
+
+    5fa9             
+    |    \
+    v     --- ccc8 ---  c76a -- 81d7
+    master                         \
+                          |         \
+                          v          v
+                      new-pages  (detached) HEAD
+
+----
+ping@ubuntu1404:~/rewriting-history$ git lg -4
+* 81d74e6 - (HEAD) add green page (23 hours ago)<ping>          <1>
+* c76ae68 - (new-pages) add yellow page (23 hours ago)<ping>    <2>
+* ccc8349 - add red page (23 hours ago)<ping>
+* 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)<Ryan>
+----
+<1> this head, now becomes "detached" to existing branches
+<2> the tip/tail of previous branch before check out
+
+    ping@ubuntu1404:~/rewriting-history$ git ref -4
+    81d74e6 HEAD@{0}: checkout: moving from new-pages to 81d7
+    c76ae68 HEAD@{1}: reset: moving to HEAD~1
+    81d74e6 HEAD@{2}: rebase -i (finish): returning to refs/heads/new-pages
+    81d74e6 HEAD@{3}: rebase -i (pick): add green page
+
+[NOTE]
+====
+regarding a "branch":
+
+* Git uses the **tip** of a branch to represent the entire branch. 
+* a branch is actually a **pointer** to a single commit — not a **container**
+  for a series of commits.
+
+image::https://cloud.githubusercontent.com/assets/2038044/22360719/7461e7a0-e420-11e6-97d8-83ea3fcad846.png[]
+
+====
+
+to get out of this situation, just create a new branch for the dangling commit,
+as suggested by git.
+
+    ping@ubuntu1404:~/rewriting-history$ git co -b green-page
+    Switched to a new branch 'green-page'
+
+    ping@ubuntu1404:~/rewriting-history$ git br -a
+    * green-page
+      master
+      new-pages
+
+----
+ping@ubuntu1404:~/rewriting-history$ git lg -4
+* 81d74e6 - (HEAD -> green-page) add green page (23 hours ago)<ping>
+* c76ae68 - (new-pages) add yellow page (23 hours ago)<ping>
+* ccc8349 - add red page (23 hours ago)<ping>
+* 5fa9624 - (master) Add link to about section in home page (4 years, 1 month ago)<Ryan>
+
+ping@ubuntu1404:~/rewriting-history$ git ref -4
+81d74e6 HEAD@{0}: checkout: moving from 81d74e637a92d4cccd77ac35171e48398e98f16d to green-page
+81d74e6 HEAD@{1}: checkout: moving from new-pages to 81d7
+c76ae68 HEAD@{2}: reset: moving to HEAD~1
+81d74e6 HEAD@{3}: rebase -i (finish): returning to refs/heads/new-pages
+----
+
+now the diagram becomes:
+
+    5fa9             
+    |    \
+    v     --- ccc8 ---  c76a -- 81d7
+    master                         \
+                          |         \
+                          v          v
+                      new-pages  HEAD/green-page
+
+so, the new branch is just one hop/commit away from the old branch 'new-pages'
+which it was branched off of.
+
+    ping@ubuntu1404:~/rewriting-history$ git lg new-pages..green-page
+    * 81d74e6 - (HEAD -> green-page) add green page (23 hours ago)<ping>
+
+=== merge green-page into master
+
+to look at diff between 'master', and the newly created branch 'green-page':
+
+----
+ping@ubuntu1404:~/rewriting-history$ git lg master..green-page
+* 81d74e6 - (HEAD -> green-page) add green page (23 hours ago)<ping>
+* c76ae68 - (new-pages) add yellow page (23 hours ago)<ping>
+* ccc8349 - add red page (23 hours ago)<ping>
+
+ping@ubuntu1404:~/rewriting-history$ git lg master..green-page --stat
+* 81d74e6 - (HEAD -> green-page) add green page (23 hours ago)<ping>|
+|  green.html | 13 +++++++++++++
+|  index.html |  3 +++
+|  2 files changed, 16 insertions(+)
+
+* c76ae68 - (new-pages) add yellow page (23 hours ago)<ping>|
+|  index.html  |  3 +++
+|  yellow.html | 13 +++++++++++++
+|  2 files changed, 16 insertions(+)
+
+* ccc8349 - add red page (23 hours ago)<ping>
+   index.html |  5 +++++
+   red.html   | 13 +++++++++++++
+   2 files changed, 18 insertions(+)
+----
+
+to merge the updates into master, we could have just use merge:
+
+    git co master
+    git merge green-page
+
+but we use another method here:
+
+to "fetch" update from source branch "green-page", into master, and doing it in
+"local" (indicated by an "."):
+
+    ping@ubuntu1404:~/rewriting-history$ git fetch . green-page:master
+    From .                                         ^    ^         ^
+       5fa9624..81d74e6  green-page -> master  (local) (src br) (dest br)
+
+now updates in new/source branch (green-page) got merged into the old/dest
+branch (master):
+
+----
+ping@ubuntu1404:~/rewriting-history$ git lg -5
+* 81d74e6 - (HEAD -> green-page, master) add green page (23 hours ago)<ping>
+* c76ae68 - (new-pages) add yellow page (23 hours ago)<ping>
+* ccc8349 - add red page (23 hours ago)<ping>
+* 5fa9624 - Add link to about section in home page (4 years, 1 month ago)<Ryan>
+* b490c20 - Begin creating bio pages (4 years, 1 month ago)<Ryan>
+
+ping@ubuntu1404:~/rewriting-history$ git ref -5
+81d74e6 HEAD@{0}: checkout: moving from 81d74e637a92d4cccd77ac35171e48398e98f16d to green-page
+81d74e6 HEAD@{1}: checkout: moving from new-pages to 81d7
+c76ae68 HEAD@{2}: reset: moving to HEAD~1
+81d74e6 HEAD@{3}: rebase -i (finish): returning to refs/heads/new-pages
+81d74e6 HEAD@{4}: rebase -i (pick): add green page
+----
+
+the diagram becomes:
+
+    5fa9             
+         \
+          --- ccc8 ---  c76a -- 81d7
+                                   \
+                                    \
+                                     v
+                      new-pages  HEAD/green-page/master
+
+now to clean up useless branches:
+
+    ping@ubuntu1404:~/rewriting-history$ git br -d new-pages
+    Deleted branch new-pages (was c76ae68).
+
+    ping@ubuntu1404:~/rewriting-history$ git br -d green-page
+    error: Cannot delete branch 'green-page' checked out at '/home/ping/rewriting-history'
+
+    ping@ubuntu1404:~/rewriting-history$ git br
+    * green-page
+      master
+
+    ping@ubuntu1404:~/rewriting-history$ git co master
+    Switched to branch 'master'
+
+    ping@ubuntu1404:~/rewriting-history$ git br -d green-page
+    Deleted branch green-page (was 81d74e6).
+
+the final diagram looks:
+
+    ping@ubuntu1404:~/rewriting-history$ git lg -3
+    * 81d74e6 - (HEAD -> master) add green page (24 hours ago)<ping>
+    * c76ae68 - add yellow page (24 hours ago)<ping>
+    * ccc8349 - add red page (24 hours ago)<ping>
+    ping@ubuntu1404:~/rewriting-history$
+    ping@ubuntu1404:~/rewriting-history$ git ref -5
+    81d74e6 HEAD@{0}: checkout: moving from green-page to master
+    81d74e6 HEAD@{1}: checkout: moving from 81d74e637a92d4cccd77ac35171e48398e98f16d to green-page
+    81d74e6 HEAD@{2}: checkout: moving from new-pages to 81d7
+    c76ae68 HEAD@{3}: reset: moving to HEAD~1
+    81d74e6 HEAD@{4}: rebase -i (finish): returning to refs/heads/new-pages
+
+    5fa9             
+         \
+          --- ccc8 ---  c76a -- 81d7
+                                   \
+                                    \
+                                     v
+                                 HEAD/master
+
 == patching
 
 
@@ -3572,7 +3882,7 @@ commit diagram:
 
 display committed (not "staged") changes history.
 
-TIPS: use 'git status' to display changes that is staged but before commited.
+TIP: use 'git status' to display changes that is staged but before commited.
 
 some most useful forms:
 
@@ -3606,7 +3916,7 @@ in master but no in feature
 
 image::https://cloud.githubusercontent.com/assets/2038044/22172469/a33a7f6a-df75-11e6-954c-78e58abb2015.png[]
 
-[TIPS]
+[TIP]
 ====
 pretty log display:
 
@@ -4342,6 +4652,11 @@ to show diff between "2nd last" and "3rd last" commit:
 
 === git rebase
 
+=== git fetch
+
+git-fetch - Download objects and refs from another repository
+
+
 == misc
 
 === gitignore
@@ -4555,6 +4870,8 @@ use 'revert'
 
 == full chart
 
+.a chart about git common operations
+
     working dir           staged/indexed area              repository
                               (snapshot)                committed snapshot
 
@@ -4601,4 +4918,6 @@ use 'revert'
                                          --------->  vx (HEAD)
                                          commit (the rm)
 
+.git fetch/clone/push/pull/checkout/etc:
 
+image::https://cloud.githubusercontent.com/assets/2038044/22360092/c5dd2352-e41a-11e6-8a72-1aeb62253627.png[]
